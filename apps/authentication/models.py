@@ -35,6 +35,29 @@ class Users(db.Model, UserMixin):
     def __repr__(self):
         return str(self.username)
 
+class Observations(db.Model):
+
+    __tablename__ = 'Observations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    observation = db.Column(db.String(1024))
+    observationType = db.Column(db.String(64))
+    observationOn = db.Column(db.String(64))
+    observationBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.observation)
 
 @login_manager.user_loader
 def user_loader(id):
