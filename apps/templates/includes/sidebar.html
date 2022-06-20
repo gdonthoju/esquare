@@ -19,16 +19,7 @@
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-white {% if 'tables' in segment %} active bg-gradient-primary {% endif %}" 
-             href="/tables.html">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">table_view</i>
-            </div>
-            <span class="nav-link-text ms-1">Tables</span>
-          </a>
-        </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link text-white {% if 'billing' in segment %} active bg-gradient-primary {% endif %}" 
              href="/billing.html">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -36,10 +27,32 @@
             </div>
             <span class="nav-link-text ms-1">Billing</span>
           </a>
+        </li> -->
+        <hr>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Data Sets</h6>
         </li>
         <li class="nav-item">
+          <a class="nav-link text-white {% if 'tables' in segment %} active bg-gradient-primary {% endif %}" 
+             href="/data_producers">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">table_view</i>
+            </div>
+            <span class="nav-link-text ms-1">Data Producers</span>
+          </a>
+        </li><li class="nav-item">
+          <a class="nav-link text-white {% if 'tables' in segment %} active bg-gradient-primary {% endif %}" 
+             href="/data_consumers">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">table_view</i>
+            </div>
+            <span class="nav-link-text ms-1">Data Consumers</span>
+          </a>
+        </li>
+        <hr>
+        <li class="nav-item">
           <a class="nav-link text-white {% if 'notifications' in segment %} active bg-gradient-primary {% endif %}" 
-             href="/notifications.html">
+             href="/notifications">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">notifications</i>
             </div>

@@ -48,9 +48,9 @@ def request_loader(request):
     return user if user else None
 
 
-class Observations(db.Model):
+class eSquareObservations(db.Model):
 
-    __tablename__ = 'Observations'
+    __tablename__ = 'eSquareObservations'
 
     id = db.Column(db.Integer, primary_key=True)
     observation = db.Column(db.String(1024))
@@ -72,9 +72,9 @@ class Observations(db.Model):
     def __repr__(self):
         return str(self.observation)
 
-class DataSources(db.Model):
+class eSquareDataSources(db.Model):
 
-    __tablename__ = 'DataSources'
+    __tablename__ = 'eSquareDataSources'
 
     id = db.Column(db.Integer, primary_key=True)
     applicationName = db.Column(db.String(255))
@@ -87,6 +87,8 @@ class DataSources(db.Model):
     technicalOwnerName = db.Column(db.String(255))
     technicalOwnerEmail = db.Column(db.String(255))
     additionalInformation = db.Column(db.String(1024))
+    dataSourceOn = db.Column(db.String(64), unique=True)
+    dataSourceBy = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -102,9 +104,9 @@ class DataSources(db.Model):
     def __repr__(self):
         return str(self.applicationName)
 
-class DataConsumers(db.Model):
+class eSquareDataConsumers(db.Model):
 
-    __tablename__ = 'DataConsumers'
+    __tablename__ = 'eSquareDataConsumers'
 
     id = db.Column(db.Integer, primary_key=True)
     consumerApplicationName = db.Column(db.String(255))
@@ -118,6 +120,8 @@ class DataConsumers(db.Model):
     msg_batch_apis_name = db.Column(db.String(255))
     msg_batch_apis_description = db.Column(db.String(1024))
     msg_batch_apis_type = db.Column(db.String(255))
+    dataConsumerOn = db.Column(db.String(64), unique=True)
+    dataConsumerBy = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
@@ -133,9 +137,9 @@ class DataConsumers(db.Model):
     def __repr__(self):
         return str(self.consumerApplicationName)
 
-class DataProducers(db.Model):
+class eSquareDataProducers(db.Model):
 
-    __tablename__ = 'DataConsumers'
+    __tablename__ = 'eSquareDataProducers'
 
     id = db.Column(db.Integer, primary_key=True)
     producerApplicationName = db.Column(db.String(255))
@@ -149,6 +153,8 @@ class DataProducers(db.Model):
     msg_batch_apis_name = db.Column(db.String(255))
     msg_batch_apis_description = db.Column(db.String(1024))
     msg_batch_apis_type = db.Column(db.String(255))
+    dataProducerOn = db.Column(db.String(64), unique=True)
+    dataProducerBy = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
         for property, value in kwargs.items():
