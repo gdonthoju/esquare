@@ -46,3 +46,29 @@ def request_loader(request):
     username = request.form.get('username')
     user = Users.query.filter_by(username=username).first()
     return user if user else None
+
+
+class Observations(db.Model):
+
+    __tablename__ = 'Observations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    observation = db.Column(db.String(1024), unique=True)
+    observation_type = db.Column(db.String(64), unique=True)
+    observationOn = db.Column(db.String(64), unique=True)
+    observationBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.observation)
+
