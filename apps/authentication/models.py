@@ -53,8 +53,8 @@ class Observations(db.Model):
     __tablename__ = 'Observations'
 
     id = db.Column(db.Integer, primary_key=True)
-    observation = db.Column(db.String(1024), unique=True)
-    observation_type = db.Column(db.String(64), unique=True)
+    observation = db.Column(db.String(1024))
+    observation_type = db.Column(db.String(64))
     observationOn = db.Column(db.String(64), unique=True)
     observationBy = db.Column(db.Integer)
 
@@ -72,3 +72,94 @@ class Observations(db.Model):
     def __repr__(self):
         return str(self.observation)
 
+class DataSources(db.Model):
+
+    __tablename__ = 'DataSources'
+
+    id = db.Column(db.Integer, primary_key=True)
+    applicationName = db.Column(db.String(255))
+    description = db.Column(db.String(1024))
+    lineOfBusiness = db.Column(db.String(255))
+    businessDomain = db.Column(db.String(255))
+    dataDomain = db.Column(db.String(255))
+    businessOwnerName = db.Column(db.String(255))
+    businessOwnerEmail = db.Column(db.String(255))
+    technicalOwnerName = db.Column(db.String(255))
+    technicalOwnerEmail = db.Column(db.String(255))
+    additionalInformation = db.Column(db.String(1024))
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.applicationName)
+
+class DataConsumers(db.Model):
+
+    __tablename__ = 'DataConsumers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    consumerApplicationName = db.Column(db.String(255))
+    description = db.Column(db.String(1024))
+    lineOfBusiness = db.Column(db.String(255))
+    dataDomain = db.Column(db.String(255))
+    businessOwnerName = db.Column(db.String(255))
+    businessOwnerEmail = db.Column(db.String(255))
+    technicalOwnerName = db.Column(db.String(255))
+    technicalOwnerEmail = db.Column(db.String(255))
+    msg_batch_apis_name = db.Column(db.String(255))
+    msg_batch_apis_description = db.Column(db.String(1024))
+    msg_batch_apis_type = db.Column(db.String(255))
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.consumerApplicationName)
+
+class DataProducers(db.Model):
+
+    __tablename__ = 'DataConsumers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    producerApplicationName = db.Column(db.String(255))
+    description = db.Column(db.String(1024))
+    lineOfBusiness = db.Column(db.String(255))
+    dataDomain = db.Column(db.String(255))
+    businessOwnerName = db.Column(db.String(255))
+    businessOwnerEmail = db.Column(db.String(255))
+    technicalOwnerName = db.Column(db.String(255))
+    technicalOwnerEmail = db.Column(db.String(255))
+    msg_batch_apis_name = db.Column(db.String(255))
+    msg_batch_apis_description = db.Column(db.String(1024))
+    msg_batch_apis_type = db.Column(db.String(255))
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.producerApplicationName)

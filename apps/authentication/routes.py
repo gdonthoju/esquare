@@ -2,7 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+import datetime
 from flask import render_template, redirect, request, url_for
 from flask_login import (
     current_user,
@@ -13,7 +13,7 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm
-from apps.authentication.models import Users
+from apps.authentication.models import Users, Observations
 
 from apps.authentication.util import verify_pass
 
@@ -120,34 +120,45 @@ def internal_error(error):
     return render_template('home/page-500.html'), 500
 
 
-# Login & Registration
+# Notifications or Data Observability
 
 @blueprint.route('/observation-add', methods=['GET', 'POST'])
 def observation_add():
     observation_add_form = CreateObservationForm(request.form)
-    return render_template('accounts/observation-add.html',
+    
+    if 'add_observation' in request.form:
+
+        # read form data
+        observation_type = request.form['observation_type']
+        observation = request.form['observation']
+
+        # Check for observation - will be added later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        observation = Observations(**request.form)
+        observation.observationOn = datetime.datetime.now().timestamp()
+        observation.observationBy = current_user.get_id()
+        db.session.add(observation)
+        db.session.commit()
+
+        return render_template('accounts/observation-add.html',
+                               msg='Observation added to eSquare. please <a href="/notifications">view here</a>',
+                               success=True,
                                form=observation_add_form)
-    # if 'login' in request.form:
 
-    #     # read form data
-    #     username = request.form['username']
-    #     password = request.form['password']
-
-    #     # Locate user
-    #     user = Users.query.filter_by(username=username).first()
-
-    #     # Check the password
-    #     if user and verify_pass(password, user.password):
-
-    #         login_user(user)
-    #         return redirect(url_for('authentication_blueprint.route_default'))
-
-    #     # Something (user or pass) is not ok
-    #     return render_template('accounts/login.html',
-    #                            msg='Wrong user or password',
-    #                            form=login_form)
-
-    # if not current_user.is_authenticated:
-    #     return render_template('accounts/login.html',
-    #                            form=login_form)
-    # return redirect(url_for('home_blueprint.index'))
+    else:
+        return render_template('accounts/observation-add.html', form=observation_add_form)
