@@ -12,7 +12,7 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm
 from apps.authentication.models import Users
 
 from apps.authentication.util import verify_pass
@@ -118,3 +118,36 @@ def not_found_error(error):
 @blueprint.errorhandler(500)
 def internal_error(error):
     return render_template('home/page-500.html'), 500
+
+
+# Login & Registration
+
+@blueprint.route('/observation-add', methods=['GET', 'POST'])
+def observation_add():
+    observation_add_form = CreateObservationForm(request.form)
+    return render_template('accounts/observation-add.html',
+                               form=observation_add_form)
+    # if 'login' in request.form:
+
+    #     # read form data
+    #     username = request.form['username']
+    #     password = request.form['password']
+
+    #     # Locate user
+    #     user = Users.query.filter_by(username=username).first()
+
+    #     # Check the password
+    #     if user and verify_pass(password, user.password):
+
+    #         login_user(user)
+    #         return redirect(url_for('authentication_blueprint.route_default'))
+
+    #     # Something (user or pass) is not ok
+    #     return render_template('accounts/login.html',
+    #                            msg='Wrong user or password',
+    #                            form=login_form)
+
+    # if not current_user.is_authenticated:
+    #     return render_template('accounts/login.html',
+    #                            form=login_form)
+    # return redirect(url_for('home_blueprint.index'))
