@@ -207,7 +207,7 @@ def data_producer_add():
         db.session.commit()
 
         return render_template('accounts/data-producer-add.html',
-                               msg='Data Source added to eSquare. please <a href="/data_sourcing">view here</a>',
+                               msg='Data Producer added to eSquare. please <a href="/data_producers">view here</a>',
                                success=True,
                                form=data_producer_add_form)
 
@@ -258,7 +258,7 @@ def data_consumer_add():
         db.session.commit()
 
         return render_template('accounts/data-consumer-add.html',
-                               msg='Data Source added to eSquare. please <a href="/data_sourcing">view here</a>',
+                               msg='Data Consumer added to eSquare. please <a href="/data_consumers">view here</a>',
                                success=True,
                                form=data_consumer_add_form)
 
