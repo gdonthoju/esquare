@@ -168,20 +168,19 @@ def observation_add():
 @blueprint.route('/data-producer-add', methods=['GET', 'POST'])
 def data_producer_add():
     data_producer_add_form = CreateDataProducerForm(request.form)
-    print("dataProducerAdd is firing")
-    if 'add_data_producer' in request.form:
-
+    if 'add_data_producer' in request.form.keys():
         # read form data
-        applicationName = request.form['applicationName']
+        applicationName = request.form['producerApplicationName']
         description = request.form['description']
         lineOfBusiness = request.form['lineOfBusiness']
-        businessDomain = request.form['businessDomain']
         dataDomain = request.form['dataDomain']
         businessOwnerName = request.form['businessOwnerName']
         businessOwnerEmail = request.form['businessOwnerEmail']
         technicalOwnerName = request.form['technicalOwnerName']
         technicalOwnerEmail = request.form['technicalOwnerEmail']
-        additionalInformation = request.form['additionalInformation']
+        msg_batch_apis_name = request.form['msg_batch_apis_name']
+        msg_batch_apis_description = request.form['msg_batch_apis_description']
+        msg_batch_apis_type = request.form['msg_batch_apis_type']
         
         # Check for data-sourcing-add - will be added later
         # user = Users.query.filter_by(username=username).first()
@@ -221,20 +220,19 @@ def data_producer_add():
 def data_consumer_add():
     data_consumer_add_form = CreateDataConsumerForm(request.form)
     print("dataConsumerAdd is firing")
-    if 'add_data_consumer' in request.form:
-
+    if 'add_data_consumer' in request.form.keys():
         # read form data
-        applicationName = request.form['applicationName']
+        applicationName = request.form['consumerApplicationName']
         description = request.form['description']
         lineOfBusiness = request.form['lineOfBusiness']
-        businessDomain = request.form['businessDomain']
         dataDomain = request.form['dataDomain']
         businessOwnerName = request.form['businessOwnerName']
         businessOwnerEmail = request.form['businessOwnerEmail']
         technicalOwnerName = request.form['technicalOwnerName']
         technicalOwnerEmail = request.form['technicalOwnerEmail']
-        additionalInformation = request.form['additionalInformation']
-        
+        msg_batch_apis_name = request.form['msg_batch_apis_name']
+        msg_batch_apis_description = request.form['msg_batch_apis_description']
+        msg_batch_apis_type = request.form['msg_batch_apis_type']
         # Check for data-sourcing-add - will be added later
         # user = Users.query.filter_by(username=username).first()
         # if user:
