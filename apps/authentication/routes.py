@@ -12,7 +12,7 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm
 from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers
 
 from apps.authentication.util import verify_pass
@@ -150,7 +150,7 @@ def observation_add():
 
         # else we can create the user
         observation = eSquareObservations(**request.form)
-        observation.observationOn = datetime.datetime.now().timestamp()
+        observation.observationOn = int(datetime.datetime.now().timestamp() * 1000)
         observation.observationBy = current_user.get_id()
         db.session.add(observation)
         db.session.commit()
@@ -200,8 +200,8 @@ def data_producer_add():
 
         # else we can create the user
         dataProducerAdd = eSquareDataProducers(**request.form)
-        print(dataProducerAdd)
-        dataProducerAdd.dataProducerOn = datetime.datetime.now().timestamp()
+        # print(dataProducerAdd)
+        dataProducerAdd.dataProducerOn = int(datetime.datetime.now().timestamp() * 1000)
         dataProducerAdd.dataProducerBy = current_user.get_id()
         db.session.add(dataProducerAdd)
         db.session.commit()
@@ -213,6 +213,66 @@ def data_producer_add():
 
     else:
         return render_template('accounts/data-producer-add.html', form=data_producer_add_form)
+
+# Data Producer Edit
+
+@blueprint.route('/data-producer-edit', methods=['GET', 'POST'])
+def data_producer_edit():
+    data_producer_edit_form = EditDataProducerForm(request.form)
+    print("This is Firing")
+    if 'edit_data_producer' in request.form.keys():
+        # read form data
+        idProducerApplication = request.form['id']
+        applicationName = request.form['producerApplicationName']
+        description = request.form['description']
+        lineOfBusiness = request.form['lineOfBusiness']
+        dataDomain = request.form['dataDomain']
+        businessOwnerName = request.form['businessOwnerName']
+        businessOwnerEmail = request.form['businessOwnerEmail']
+        technicalOwnerName = request.form['technicalOwnerName']
+        technicalOwnerEmail = request.form['technicalOwnerEmail']
+        msg_batch_apis_name = request.form['msg_batch_apis_name']
+        msg_batch_apis_description = request.form['msg_batch_apis_description']
+        msg_batch_apis_type = request.form['msg_batch_apis_type']
+        
+        # Check for data-sourcing-edit - will be edited later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataProducerEdit = eSquareDataProducers(**request.form)
+       
+        updateData = dict(request.form)
+        del updateData['csrf_token']
+        del updateData['edit_data_producer']
+        
+        
+        updateData['dataProducerOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        updateData['dataProducerBy'] = current_user.get_id()
+        # print(updateData)
+        eSquareDataProducers.query.filter_by(id=idProducerApplication).update(updateData)
+        db.session.commit()
+
+        return render_template('accounts/data-producer-edit.html',
+                               msg='Data Producer edited to eSquare. please <a href="/data_producers">view here</a>',
+                               success=True,
+                               form=data_producer_edit_form)
+
+    else:
+        return render_template('accounts/data-producer-edit.html', form=data_producer_edit_form)
+
 
 # Data Consumer
 
@@ -251,8 +311,8 @@ def data_consumer_add():
 
         # else we can create the user
         dataConsumerAdd = eSquareDataConsumers(**request.form)
-        print(dataConsumerAdd)
-        dataConsumerAdd.dataConsumerOn = datetime.datetime.now().timestamp()
+        # print(dataConsumerAdd)
+        dataConsumerAdd.dataConsumerOn = int(datetime.datetime.now().timestamp() * 1000)
         dataConsumerAdd.dataConsumerBy = current_user.get_id()
         db.session.add(dataConsumerAdd)
         db.session.commit()

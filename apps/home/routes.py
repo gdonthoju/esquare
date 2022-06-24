@@ -7,8 +7,7 @@ from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareObservations
-
+from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers
 
 @blueprint.route('/index')
 @login_required
@@ -32,6 +31,14 @@ def route_template(template):
         if template.startswith('notifications'):
             observations = eSquareObservations.query.all()
             return render_template("home/" + template, observations=observations, segment=segment)
+
+        elif template.startswith('data_producers'):
+            data_producers = eSquareDataProducers.query.all()
+            return render_template("home/" + template, data_producers=data_producers, segment=segment)
+
+        elif template.startswith('data_consumers'):
+            data_consumers = eSquareDataConsumers.query.all()
+            return render_template("home/" + template, data_consumers=data_consumers, segment=segment)
 
         # Serve the file (if exists) from app/templates/home/FILE.html
         return render_template("home/" + template, segment=segment)

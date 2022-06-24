@@ -120,7 +120,7 @@ class eSquareDataConsumers(db.Model):
     msg_batch_apis_name = db.Column(db.String(255))
     msg_batch_apis_description = db.Column(db.String(1024))
     msg_batch_apis_type = db.Column(db.String(255))
-    dataConsumerOn = db.Column(db.String(64), unique=True)
+    dataConsumerOn = db.Column(db.String(64))
     dataConsumerBy = db.Column(db.Integer)
 
     def __init__(self, **kwargs):
@@ -153,7 +153,7 @@ class eSquareDataProducers(db.Model):
     msg_batch_apis_name = db.Column(db.String(255))
     msg_batch_apis_description = db.Column(db.String(1024))
     msg_batch_apis_type = db.Column(db.String(255))
-    dataProducerOn = db.Column(db.String(64), unique=True)
+    dataProducerOn = db.Column(db.String(64))
     dataProducerBy = db.Column(db.Integer)
 
     def __init__(self, **kwargs):

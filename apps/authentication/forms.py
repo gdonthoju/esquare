@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from importlib.resources import contents
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, TextAreaField, SelectField
+from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField
 from wtforms.validators import Email, DataRequired
 
 # login and registration
@@ -42,6 +42,45 @@ class CreateObservationForm(FlaskForm):
                          validators=[DataRequired()])
     
 class CreateDataProducerForm(FlaskForm):
+    producerApplicationName = TextField('Producing Application Name',
+                         id='producerApplicationName',
+                         validators=[DataRequired()])
+    description = TextAreaField('Description',
+                         id='description',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    lineOfBusiness = TextField('Line of Business',
+                         id='lineOfBusiness',
+                         validators=[DataRequired()])
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    businessOwnerName = TextField('Business Owner Name',
+                         id='businessOwnerName',
+                         validators=[DataRequired()])
+    businessOwnerEmail = TextField('Business Owner Email',
+                         id='businessOwnerEmail',
+                         validators=[DataRequired(), Email()])
+    technicalOwnerName = TextField('Technical Owner Name',
+                         id='technicalOwnerName',
+                         validators=[DataRequired()])
+    technicalOwnerEmail = TextField('Technical Owner Email',
+                         id='technicalOwnerEmail',
+                         validators=[DataRequired(), Email()])
+    msg_batch_apis_name = TextField('Name (Msg/Batch/APIs)',
+                         id='msg_batch_apis_name',
+                         validators=[DataRequired()])
+    msg_batch_apis_description = TextAreaField('Description (Msg/Batch/APIs)',
+                         id='msg_batch_apis_description',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    msg_batch_apis_type = TextField('Type (Msg/Batch/APIs)',
+                         id='msg_batch_apis_type',
+                         validators=[DataRequired()])
+
+
+class EditDataProducerForm(FlaskForm):
+    id = HiddenField('id',id='id')
     producerApplicationName = TextField('Producing Application Name',
                          id='producerApplicationName',
                          validators=[DataRequired()])

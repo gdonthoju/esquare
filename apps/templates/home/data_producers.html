@@ -16,14 +16,81 @@
               <span><a href="data-producer-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add</a></span>
             </div>
             <div class="card-body p-3 pb-0">
-              {% if observations %}
-                {% for item in observations %}
-                    <div class="alert alert-{{item.observation_type}} alert-dismissible text-white" role="alert">
-                      <span class="text-sm">{{item.observation}}</span>
-                    </div>
-                {% endfor %}
+              {% if data_producers %}
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Producer Application Name</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Line Of Business</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Owner Name</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Technical Owner Name</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Msg (Batch/APIs/Name)</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type (Batch/APIs/Name)</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created Info</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in data_producers %}
+                    <tr>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.producerApplicationName}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.description}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.lineOfBusiness}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.dataDomain}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessOwnerName}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.businessOwnerEmail}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.technicalOwnerName}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.technicalOwnerEmail}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.msg_batch_apis_name}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.msg_batch_apis_description}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.msg_batch_apis_type}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.dataProducerOn | format_datetime}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.dataProducerBy}}</p>
+                      </td>
+                      
+                      <td class="align-middle">
+                        <form method="post" action="data-producer-edit">
+                          <input type="hidden" name="id" value="{{item.id}}"/>
+                          <input type="hidden" name="producerApplicationName" value="{{item.producerApplicationName}}"/>
+                          <input type="hidden" name="description" value="{{item.description}}"/>
+                          <input type="hidden" name="lineOfBusiness" value="{{item.lineOfBusiness}}"/>
+                          <input type="hidden" name="dataDomain" value="{{item.dataDomain}}"/>
+                          <input type="hidden" name="businessOwnerName" value="{{item.businessOwnerName}}"/>
+                          <input type="hidden" name="businessOwnerEmail" value="{{item.businessOwnerEmail}}"/>
+                          <input type="hidden" name="technicalOwnerName" value="{{item.technicalOwnerName}}"/>
+                          <input type="hidden" name="technicalOwnerEmail" value="{{item.technicalOwnerEmail}}"/>
+                          <input type="hidden" name="msg_batch_apis_name" value="{{item.msg_batch_apis_name}}"/>
+                          <input type="hidden" name="msg_batch_apis_description" value="{{item.msg_batch_apis_description}}"/>
+                          <input type="hidden" name="msg_batch_apis_type" value="{{item.msg_batch_apis_type}}"/>
+                          <input type="hidden" name="dataProducerOn" value="{{item.dataProducerOn}}"/>
+                          <input type="hidden" name="dataProducerBy" value="{{item.dataProducerBy}}"/>
+                          <input type="submit" value="Edit">
+                        </form>
+                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                          Edit
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
               {% else %}
-                <h6 class="text-center">No observations found yet</h6>
+                <h6 class="text-center">No data producers found yet</h6>
               {% endif %} 
             </div>
           </div>
