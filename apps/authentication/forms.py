@@ -70,8 +70,9 @@ class CreateDataProducerForm(FlaskForm):
     msg_batch_apis_name = TextField('Name (Msg/Batch/APIs)',
                          id='msg_batch_apis_name',
                          validators=[DataRequired()])
-    msg_batch_apis_description = TextField('Description (Msg/Batch/APIs)',
+    msg_batch_apis_description = TextAreaField('Description (Msg/Batch/APIs)',
                          id='msg_batch_apis_description',
+                         render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
     msg_batch_apis_type = TextField('Type (Msg/Batch/APIs)',
                          id='msg_batch_apis_type',
@@ -106,8 +107,9 @@ class CreateDataConsumerForm(FlaskForm):
     msg_batch_apis_name = TextField('Name (Msg/Batch/APIs)',
                          id='msg_batch_apis_name',
                          validators=[DataRequired()])
-    msg_batch_apis_description = TextField('Description (Msg/Batch/APIs)',
+    msg_batch_apis_description = TextAreaField('Description (Msg/Batch/APIs)',
                          id='msg_batch_apis_description',
+                         render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
     msg_batch_apis_type = TextField('Type (Msg/Batch/APIs)',
                          id='msg_batch_apis_type',
@@ -142,6 +144,7 @@ class CreateDataSourceForm(FlaskForm):
     technicalOwnerEmail = TextField('Technical Owner Email',
                          id='technicalOwnerEmail',
                          validators=[DataRequired(), Email()])
-    additionalInformation = TextField('Additional Information',
+    additionalInformation = TextAreaField('Additional Information',
                          id='additionalInformation',
+                         render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])

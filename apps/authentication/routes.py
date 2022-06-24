@@ -12,8 +12,8 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm
-from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm
+from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers
 
 from apps.authentication.util import verify_pass
 
@@ -163,12 +163,12 @@ def observation_add():
     else:
         return render_template('accounts/observation-add.html', form=observation_add_form)
 
-# Data Sourcing
+# Data Producer
 
 @blueprint.route('/data-producer-add', methods=['GET', 'POST'])
 def data_producer_add():
-    producer_add_form = CreateDataProducerForm(request.form)
-    
+    data_producer_add_form = CreateDataProducerForm(request.form)
+    print("dataProducerAdd is firing")
     if 'add_data_producer' in request.form:
 
         # read form data
@@ -201,6 +201,7 @@ def data_producer_add():
 
         # else we can create the user
         dataProducerAdd = eSquareDataProducers(**request.form)
+        print(dataProducerAdd)
         dataProducerAdd.dataProducerOn = datetime.datetime.now().timestamp()
         dataProducerAdd.dataProducerBy = current_user.get_id()
         db.session.add(dataProducerAdd)
@@ -209,7 +210,59 @@ def data_producer_add():
         return render_template('accounts/data-producer-add.html',
                                msg='Data Source added to eSquare. please <a href="/data_sourcing">view here</a>',
                                success=True,
-                               form=producer_add_form)
+                               form=data_producer_add_form)
 
     else:
-        return render_template('accounts/data-producer-add.html', form=producer_add_form)
+        return render_template('accounts/data-producer-add.html', form=data_producer_add_form)
+
+# Data Consumer
+
+@blueprint.route('/data-consumer-add', methods=['GET', 'POST'])
+def data_consumer_add():
+    data_consumer_add_form = CreateDataConsumerForm(request.form)
+    print("dataConsumerAdd is firing")
+    if 'add_data_consumer' in request.form:
+
+        # read form data
+        applicationName = request.form['applicationName']
+        description = request.form['description']
+        lineOfBusiness = request.form['lineOfBusiness']
+        businessDomain = request.form['businessDomain']
+        dataDomain = request.form['dataDomain']
+        businessOwnerName = request.form['businessOwnerName']
+        businessOwnerEmail = request.form['businessOwnerEmail']
+        technicalOwnerName = request.form['technicalOwnerName']
+        technicalOwnerEmail = request.form['technicalOwnerEmail']
+        additionalInformation = request.form['additionalInformation']
+        
+        # Check for data-sourcing-add - will be added later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataConsumerAdd = eSquareDataConsumers(**request.form)
+        print(dataConsumerAdd)
+        dataConsumerAdd.dataConsumerOn = datetime.datetime.now().timestamp()
+        dataConsumerAdd.dataConsumerBy = current_user.get_id()
+        db.session.add(dataConsumerAdd)
+        db.session.commit()
+
+        return render_template('accounts/data-consumer-add.html',
+                               msg='Data Source added to eSquare. please <a href="/data_sourcing">view here</a>',
+                               success=True,
+                               form=data_consumer_add_form)
+
+    else:
+        return render_template('accounts/data-consumer-add.html', form=data_consumer_add_form)
