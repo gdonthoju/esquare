@@ -161,6 +161,7 @@ def route_data_producers():
                 db.session.add(dataProducerAdd)
                 db.session.commit()
                 print(dataItem)
-        return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
+        return redirect("data_producers")
+        # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
     else:
         return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
