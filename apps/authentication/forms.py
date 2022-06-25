@@ -4,8 +4,9 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from importlib.resources import contents
+from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField
+from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField, FileField
 from wtforms.validators import Email, DataRequired
 
 # login and registration
@@ -78,6 +79,10 @@ class CreateDataProducerForm(FlaskForm):
                          id='msg_batch_apis_type',
                          validators=[DataRequired()])
 
+class UploadDataProducersExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
 
 class EditDataProducerForm(FlaskForm):
     id = HiddenField('id',id='id')

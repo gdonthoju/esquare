@@ -1,6 +1,6 @@
 {% extends "layouts/base-fullscreen.html" %}
 
-{% block title %} Edit Data Producer {% endblock %} 
+{% block title %} Edit Data Consumer {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -25,16 +25,16 @@
                     {% if msg %}
                       <span class="text-danger">{{ msg | safe }}</span>
                     {% else %}
-                      Edit Producer Data in to eSquare
+                      Enter Consumer Data in to eSquare
                     {% endif %}                    
                   </p>
                 </div>
                 <div class="card-body">
                   <form role="form" method="post" action="">
                     {{ form.hidden_tag() }}
-                    <label class="form-label">Producer Application Name</label>
+                    <label class="form-label">Consumer Application Name</label>
                     <div class="input-group input-group-outline mb-3">
-                      {{ form.producerApplicationName(class="form-control") }}
+                      {{ form.consumerApplicationName(class="form-control") }}
                     </div>
                     <label class="form-label">Description</label>
                     <div class="input-group input-group-outline mb-3">
@@ -77,16 +77,8 @@
                       {{ form.msg_batch_apis_type(class="form-control") }}
                     </div>
                     <div class="text-center">
-                      <button type="submit" name="edit_data_producer" 
-                              class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Edit Data Producer</button>
-                    </div>
-                  </form>
-                  <hr>
-                  <form method="post" action="">
-                    <div class="text-center">
-                      {{ form.id(class="form-control") }}
-                      <button type="submit" name="delete_data_producer" 
-                              class="btn btn-lg bg-gradient-danger btn-lg w-100 mt-4 mb-0">Delete Data Producer</button>
+                      <button type="submit" name="edit_data_consumer" 
+                              class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Edit Data Consumer</button>
                     </div>
                   </form>
                 </div>
