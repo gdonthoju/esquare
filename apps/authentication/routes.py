@@ -219,7 +219,7 @@ def data_producer_add():
 @blueprint.route('/data-producer-edit', methods=['GET', 'POST'])
 def data_producer_edit():
     data_producer_edit_form = EditDataProducerForm(request.form)
-    print("This is Firing")
+    print("This is Firing" , request.form.keys())
     if 'edit_data_producer' in request.form.keys():
         # read form data
         idProducerApplication = request.form['id']
@@ -270,6 +270,12 @@ def data_producer_edit():
                                success=True,
                                form=data_producer_edit_form)
 
+    elif 'delete_data_producer' in request.form.keys():
+        idProducerApplication = request.form['id']
+        print("delIdProducerApplication", idProducerApplication)
+        eSquareDataProducers.query.filter_by(id=idProducerApplication).delete()
+        db.session.commit()
+        return redirect("data_producers")
     else:
         return render_template('accounts/data-producer-edit.html', form=data_producer_edit_form)
 
