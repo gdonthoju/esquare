@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present AppSeed.us
+Copyright (c) 2019 - present eSquare
 """
 
 from typing import ItemsView
@@ -19,7 +19,7 @@ from flask_login import (
     current_user
 )
 
-UPLOAD_FOLDER = '/home/seera/Documents/per/esquare/apps/home/temp_uploads/'
+UPLOAD_FOLDER = '/Users/girishdonthoju/Documents/development/esquare/apps/home/temp_uploads/'
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 @blueprint.route('/index')
