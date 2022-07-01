@@ -1,0 +1,22 @@
+Coming Soon:
+
+For Producers
+- Preview Excel Data
+- Add Selected Rows into Databases
+- Delete Selected Rows in Database
+- Pagination in List View
+- Confirmation for Deleting a record
+- Delete Uploaded Excel File
+
+
+For Sources
+- Preview Excel Data
+- Add Selected Rows into Databases
+- Delete Selected Rows in Database
+- Pagination in List View
+- Confirmation for Deleting a record
+- Delete Uploaded Excel File
+
+
+Questions
+- Do we need to link "Sources" while adding "Producers/Consumers" or Can we add "Producers/Consumers" and link it to "Sources" after adding
