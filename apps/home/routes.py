@@ -9,7 +9,7 @@ from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
-from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm
+from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm
 import pandas
 from werkzeug.utils import secure_filename
 import os
@@ -44,10 +44,6 @@ def route_template(template):
         if template.startswith('notifications'):
             observations = eSquareObservations.query.all()
             return render_template("home/" + template, observations=observations, segment=segment)
-
-        elif template.startswith('data_consumers'):
-            data_consumers = eSquareDataConsumers.query.all()
-            return render_template("home/" + template, data_consumers=data_consumers, segment=segment)
 
         # Serve the file (if exists) from app/templates/home/FILE.html
         return render_template("home/" + template, segment=segment)
@@ -218,3 +214,56 @@ def route_data_producers():
         # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
     else:
         return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
+
+@blueprint.route('/data_consumers', methods=['GET', 'POST'])
+@login_required
+def route_data_consumers():
+    # Detect the current page
+    segment = get_segment(request)
+    upload_data_consumers_excel_form = UploadDataConsumersExcelForm(request.form)
+    data_consumers = eSquareDataConsumers.query.all()
+    if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
+
+        if 'excelFilePath' not in request.files:
+            flash('No file part')
+            print('No file part')
+        file = request.files['excelFilePath']
+        print('file data', file)
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            print('No selected file')
+            flash('No selected file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            print("FILENAME", UPLOAD_FOLDER + filename);
+            excelData = pandas.read_excel(UPLOAD_FOLDER + filename, engine='openpyxl', dtype=object)
+            # print("excelData",excelData.to_dict())
+            excelDataAsList = excelData.values.tolist()
+
+            for dataItem in excelDataAsList:
+                dataConsumerExcelRowAdd = {}
+                dataConsumerExcelRowAdd['consumerApplicationName'] = dataItem[0]
+                dataConsumerExcelRowAdd['description'] = dataItem[1]
+                dataConsumerExcelRowAdd['lineOfBusiness'] = dataItem[2]
+                dataConsumerExcelRowAdd['dataDomain'] = dataItem[3]
+                dataConsumerExcelRowAdd['businessOwnerName'] = dataItem[4]
+                dataConsumerExcelRowAdd['businessOwnerEmail'] = dataItem[5]
+                dataConsumerExcelRowAdd['technicalOwnerName'] = dataItem[6]
+                dataConsumerExcelRowAdd['technicalOwnerEmail'] = dataItem[7]
+                dataConsumerExcelRowAdd['msg_batch_apis_name'] = dataItem[8]
+                dataConsumerExcelRowAdd['msg_batch_apis_description'] = dataItem[9]
+                dataConsumerExcelRowAdd['msg_batch_apis_type'] = dataItem[10]
+                dataConsumerExcelRowAdd['dataConsumerOn'] = int(datetime.datetime.now().timestamp() * 1000)
+                dataConsumerExcelRowAdd['dataConsumerBy'] = current_user.get_id()
+                dataConsumerAdd = eSquareDataConsumers(**dataConsumerExcelRowAdd)
+                print(dataConsumerExcelRowAdd)
+                db.session.add(dataConsumerAdd)
+                db.session.commit()
+                print(dataItem)
+        return redirect("data_consumers")
+        # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
+    else:
+        return render_template("home/data_consumers.html", data_consumers=data_consumers, segment=segment,
+                               form=upload_data_consumers_excel_form)

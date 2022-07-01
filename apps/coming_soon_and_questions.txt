@@ -1,5 +1,13 @@
 Coming Soon:
 
+For Sources
+- Preview Excel Data
+- Add Selected Rows into Databases
+- Delete Selected Rows in Database
+- Pagination in List View
+- Confirmation for Deleting a record
+- Delete Uploaded Excel File
+
 For Producers
 - Preview Excel Data
 - Add Selected Rows into Databases
@@ -9,7 +17,7 @@ For Producers
 - Delete Uploaded Excel File
 
 
-For Sources
+For Consumers
 - Preview Excel Data
 - Add Selected Rows into Databases
 - Delete Selected Rows in Database

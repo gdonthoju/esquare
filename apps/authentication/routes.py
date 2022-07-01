@@ -12,7 +12,7 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm
 from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
 
 from apps.authentication.util import verify_pass
@@ -445,3 +445,67 @@ def data_consumer_add():
 
     else:
         return render_template('accounts/data-consumer-add.html', form=data_consumer_add_form)
+
+# Data Consumer Edit
+
+@blueprint.route('/data-consumer-edit', methods=['GET', 'POST'])
+def data_consumer_edit():
+    data_consumer_edit_form = EditDataConsumerForm(request.form)
+    print("This is Firing", request.form.keys())
+    if 'edit_data_consumer' in request.form.keys():
+        # read form data
+        idConsumerApplication = request.form['id']
+        applicationName = request.form['consumerApplicationName']
+        description = request.form['description']
+        lineOfBusiness = request.form['lineOfBusiness']
+        dataDomain = request.form['dataDomain']
+        businessOwnerName = request.form['businessOwnerName']
+        businessOwnerEmail = request.form['businessOwnerEmail']
+        technicalOwnerName = request.form['technicalOwnerName']
+        technicalOwnerEmail = request.form['technicalOwnerEmail']
+        msg_batch_apis_name = request.form['msg_batch_apis_name']
+        msg_batch_apis_description = request.form['msg_batch_apis_description']
+        msg_batch_apis_type = request.form['msg_batch_apis_type']
+
+        # Check for data-sourcing-edit - will be edited later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataProducerEdit = eSquareDataProducers(**request.form)
+
+        updateData = dict(request.form)
+        del updateData['csrf_token']
+        del updateData['edit_data_consumer']
+
+        updateData['dataConsumerOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        updateData['dataConsumerBy'] = current_user.get_id()
+        # print(updateData)
+        eSquareDataConsumers.query.filter_by(id=idConsumerApplication).update(updateData)
+        db.session.commit()
+
+        return render_template('accounts/data-consumer-edit.html',
+                               msg='Data Producer edited to eSquare. please <a href="/data_consumers">view here</a>',
+                               success=True,
+                               form=data_consumer_edit_form)
+
+    elif 'delete_data_consumer' in request.form.keys():
+        idConsumerApplication = request.form['id']
+        print("delIdProducerApplication", idConsumerApplication)
+        eSquareDataConsumers.query.filter_by(id=idConsumerApplication).delete()
+        db.session.commit()
+        return redirect("data_consumers")
+    else:
+        return render_template('accounts/data-consumer-edit.html', form=data_consumer_edit_form)
