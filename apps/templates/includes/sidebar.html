@@ -19,6 +19,17 @@
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
+        <hr>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if 'tables' in segment %} active bg-gradient-primary {% endif %}" 
+             href="/data_sources">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">table_view</i>
+            </div>
+            <span class="nav-link-text ms-1">Data Sources</span>
+          </a>
+        </li>
+        <hr>
         <!-- <li class="nav-item">
           <a class="nav-link text-white {% if 'billing' in segment %} active bg-gradient-primary {% endif %}" 
              href="/billing.html">
@@ -40,7 +51,8 @@
             </div>
             <span class="nav-link-text ms-1">Data Producers</span>
           </a>
-        </li><li class="nav-item">
+        </li>
+        <li class="nav-item">
           <a class="nav-link text-white {% if 'tables' in segment %} active bg-gradient-primary {% endif %}" 
              href="/data_consumers">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

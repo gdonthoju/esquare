@@ -12,8 +12,8 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm
-from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm
+from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
 
 from apps.authentication.util import verify_pass
 
@@ -163,6 +163,57 @@ def observation_add():
     else:
         return render_template('accounts/observation-add.html', form=observation_add_form)
 
+# Data Source
+
+@blueprint.route('/data-source-add', methods=['GET', 'POST'])
+def data_source_add():
+    data_source_add_form = CreateDataSourceForm(request.form)
+    if 'add_data_source' in request.form.keys():
+        # read form data
+        applicationName = request.form['applicationName']
+        description = request.form['description']
+        lineOfBusiness = request.form['lineOfBusiness']
+        businessDomain = request.form['businessDomain']
+        dataDomain = request.form['dataDomain']
+        businessOwnerName = request.form['businessOwnerName']
+        businessOwnerEmail = request.form['businessOwnerEmail']
+        technicalOwnerName = request.form['technicalOwnerName']
+        technicalOwnerEmail = request.form['technicalOwnerEmail']
+        additionalInformation = request.form['additionalInformation']
+        
+        # Check for data-sourcing-add - will be added later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataSourceAdd = eSquareDataSources(**request.form)
+        # print(dataSourceAdd)
+        dataSourceAdd.dataSourceOn = int(datetime.datetime.now().timestamp() * 1000)
+        dataSourceAdd.dataSourceBy = current_user.get_id()
+        db.session.add(dataSourceAdd)
+        db.session.commit()
+
+        return render_template('accounts/data-source-add.html',
+                               msg='Data Source added to eSquare. please <a href="/data_sources">view here</a>',
+                               success=True,
+                               form=data_source_add_form)
+
+    else:
+        return render_template('accounts/data-source-add.html', form=data_source_add_form)
+
+
 # Data Producer
 
 @blueprint.route('/data-producer-add', methods=['GET', 'POST'])
@@ -278,6 +329,70 @@ def data_producer_edit():
         return redirect("data_producers")
     else:
         return render_template('accounts/data-producer-edit.html', form=data_producer_edit_form)
+
+# Data Source Edit
+
+@blueprint.route('/data-source-edit', methods=['GET', 'POST'])
+def data_source_edit():
+    data_source_edit_form = EditDataSourceForm(request.form)
+    print("This is Firing" , request.form.keys())
+    if 'edit_data_source' in request.form.keys():
+        # read form data
+        idSourceApplication = request.form['id']
+        applicationName = request.form['applicationName']
+        description = request.form['description']
+        lineOfBusiness = request.form['lineOfBusiness']
+        businessDomain = request.form['businessDomain']
+        dataDomain = request.form['dataDomain']
+        businessOwnerName = request.form['businessOwnerName']
+        businessOwnerEmail = request.form['businessOwnerEmail']
+        technicalOwnerName = request.form['technicalOwnerName']
+        technicalOwnerEmail = request.form['technicalOwnerEmail']
+        additionalInformation = request.form['additionalInformation']
+        
+        # Check for data-sourcing-edit - will be edited later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataSourceEdit = eSquareDataSources(**request.form)
+       
+        updateData = dict(request.form)
+        del updateData['csrf_token']
+        del updateData['edit_data_source']
+        
+        
+        updateData['dataSourceOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        updateData['dataSourceBy'] = current_user.get_id()
+        # print(updateData)
+        eSquareDataSources.query.filter_by(id=idSourceApplication).update(updateData)
+        db.session.commit()
+
+        return render_template('accounts/data-source-edit.html',
+                               msg='Data Source edited to eSquare. please <a href="/data_sources">view here</a>',
+                               success=True,
+                               form=data_source_edit_form)
+
+    elif 'delete_data_source' in request.form.keys():
+        idSourceApplication = request.form['id']
+        print("delIdSourceApplication", idSourceApplication)
+        eSquareDataSources.query.filter_by(id=idSourceApplication).delete()
+        db.session.commit()
+        return redirect("data_sources")
+    else:
+        return render_template('accounts/data-source-edit.html', form=data_source_edit_form)
 
 
 # Data Consumer

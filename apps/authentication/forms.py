@@ -84,6 +84,11 @@ class UploadDataProducersExcelForm(FlaskForm):
                          id='excelFilePath',
                          validators=[DataRequired()])
 
+class UploadDataSourcesExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
 class EditDataProducerForm(FlaskForm):
     id = HiddenField('id',id='id')
     producerApplicationName = TextField('Producing Application Name',
@@ -160,6 +165,41 @@ class CreateDataConsumerForm(FlaskForm):
                          validators=[DataRequired()])
 
 class CreateDataSourceForm(FlaskForm):
+    applicationName = TextField('Data Source Name',
+                         id='applicationName',
+                         validators=[DataRequired()])
+    description = TextAreaField('Description',
+                         id='description',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    lineOfBusiness = TextField('Line of Business',
+                         id='lineOfBusiness',
+                         validators=[DataRequired()])
+    businessDomain = TextField('Business Domain',
+                         id='businessDomain',
+                         validators=[DataRequired()])
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    businessOwnerName = TextField('Business Owner Name',
+                         id='businessOwnerName',
+                         validators=[DataRequired()])
+    businessOwnerEmail = TextField('Business Owner Email',
+                         id='businessOwnerEmail',
+                         validators=[DataRequired(), Email()])
+    technicalOwnerName = TextField('Technical Owner Name',
+                         id='technicalOwnerName',
+                         validators=[DataRequired()])
+    technicalOwnerEmail = TextField('Technical Owner Email',
+                         id='technicalOwnerEmail',
+                         validators=[DataRequired(), Email()])
+    additionalInformation = TextAreaField('Additional Information',
+                         id='additionalInformation',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+
+class EditDataSourceForm(FlaskForm):
+    id = HiddenField('id',id='id')
     applicationName = TextField('Data Source Name',
                          id='applicationName',
                          validators=[DataRequired()])

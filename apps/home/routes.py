@@ -8,8 +8,8 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers
-from apps.authentication.forms import UploadDataProducersExcelForm
+from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
+from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm
 import pandas
 from werkzeug.utils import secure_filename
 import os
@@ -113,6 +113,58 @@ def allowed_file(filename):
 #     </form>
 #     '''
 
+@blueprint.route('/data_sources', methods=['GET', 'POST'])
+@login_required
+def route_data_sources():
+    # Detect the current page
+    segment = get_segment(request)
+    upload_data_sources_excel_form = UploadDataSourcesExcelForm(request.form)
+    data_sources = eSquareDataSources.query.all()
+    if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
+        
+        if 'excelFilePath' not in request.files:
+            flash('No file part')
+            print('No file part')
+        file = request.files['excelFilePath']
+        print('file data' , file)
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            print('No selected file')
+            flash('No selected file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            print("FILENAME" , UPLOAD_FOLDER + filename);
+            excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
+            # print("excelData",excelData.to_dict())
+            excelDataAsList = excelData.values.tolist()
+
+            for dataItem in excelDataAsList:
+                dataSourceExcelRowAdd = {}
+
+                dataSourceExcelRowAdd['applicationName'] = dataItem[0]
+                dataSourceExcelRowAdd['description'] = dataItem[1]
+                dataSourceExcelRowAdd['lineOfBusiness'] = dataItem[2]
+                dataSourceExcelRowAdd['businessDomain'] = dataItem[3]
+                dataSourceExcelRowAdd['dataDomain'] = dataItem[4]
+                dataSourceExcelRowAdd['businessOwnerName'] = dataItem[5]
+                dataSourceExcelRowAdd['businessOwnerEmail'] = dataItem[6]
+                dataSourceExcelRowAdd['technicalOwnerName'] = dataItem[7]
+                dataSourceExcelRowAdd['technicalOwnerEmail'] = dataItem[8]
+                dataSourceExcelRowAdd['additionalInformation'] = dataItem[9]
+                dataSourceExcelRowAdd['dataSourceOn'] = int(datetime.datetime.now().timestamp() * 1000)
+                dataSourceExcelRowAdd['dataSourceBy'] = current_user.get_id()
+                dataSourceAdd = eSquareDataSources(**dataSourceExcelRowAdd)
+                # print(dataProducerAdd)
+                db.session.add(dataSourceAdd)
+                db.session.commit()
+                print(dataItem)
+                # os.remove(UPLOAD_FOLDER + filename)
+        return redirect("data_sources")
+        # return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+    else:
+        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
 
 @blueprint.route('/data_producers', methods=['GET', 'POST'])
 @login_required
@@ -161,6 +213,7 @@ def route_data_producers():
                 db.session.add(dataProducerAdd)
                 db.session.commit()
                 print(dataItem)
+                os.remove(UPLOAD_FOLDER + filename)
         return redirect("data_producers")
         # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
     else:
