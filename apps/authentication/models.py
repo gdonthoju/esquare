@@ -169,3 +169,144 @@ class eSquareDataProducers(db.Model):
 
     def __repr__(self):
         return str(self.producerApplicationName)
+
+class eSquareBusinessGlossary(db.Model):
+
+    __tablename__ = 'eSquareBusinessGlossary'
+
+    id = db.Column(db.Integer, primary_key=True)
+    businessGlossaryTerm = db.Column(db.String(255))
+    businessDefinition = db.Column(db.String(1024))
+    businessDomain = db.Column(db.String(255))
+    termSource = db.Column(db.String(24))
+    dataDomain = db.Column(db.String(255))
+    businessSteward = db.Column(db.String(255))
+    businessGlossaryOn = db.Column(db.String(64))
+    businessGlossaryBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.businessGlossaryTerm)
+
+class eSquareDataCatalogue(db.Model):
+
+    __tablename__ = 'eSquareDataCatalogue'
+
+    id = db.Column(db.Integer, primary_key=True)
+    tableName = db.Column(db.String(255))
+    attributeName = db.Column(db.String(255))
+    attributeDescription = db.Column(db.String(1024))
+    columnName = db.Column(db.String(255))
+    columnDescription = db.Column(db.String(1024))
+    columnDatatype = db.Column(db.String(32))
+    isNullable = db.Column(db.Integer(1))
+    isPrimaryKey = db.Column(db.Integer(1))
+    isForeignKey = db.Column(db.Integer(1))
+    attributeSensitivity = db.Column(db.String(255))
+    termSource = db.Column(db.String(24))
+    possibleValues = db.Column(db.String(255))
+    valuesDescription = db.Column(db.String(1024))
+    notes = db.Column(db.String(1024))
+    catalogueAttributeCreatedOn = db.Column(db.String(64))
+    catalogueAttributeCreatedBy = db.Column(db.Integer)
+    catalogueAttributeUpdatedBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.attributeName)
+
+class eSquareDataSets(db.Model):
+
+    __tablename__ = 'eSquareDataSets'
+
+    id = db.Column(db.Integer, primary_key=True)
+    dataSetName = db.Column(db.String(255))
+    dataSetDescription = db.Column(db.String(1024))
+    dataSetCreatedOn = db.Column(db.String(64))
+    dataSetCreatedBy = db.Column(db.Integer)
+    dataSetUpdatedBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.dataSetName)
+
+class eSquareDataSetFields(db.Model):
+
+    __tablename__ = 'eSquareDataSetFields'
+
+    id = db.Column(db.Integer, primary_key=True)
+    dataSetId = db.Column(db.Integer)
+    dataSetFieldName = db.Column(db.String(255))
+    dataSetFieldValue = db.Column(db.String(255))
+    dataSetCreatedOn = db.Column(db.String(64))
+    dataSetCreatedBy = db.Column(db.Integer)
+    dataSetUpdatedBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.dataSetFieldName)
+
+class eSquareDataDomains(db.Model):
+
+    __tablename__ = 'eSquareDataSetFields'
+
+    id = db.Column(db.Integer, primary_key=True)
+    dataDomain = db.Column(db.String(255))
+    dataDomainDescription = db.Column(db.String(1024))
+    dataSetCreatedOn = db.Column(db.String(64))
+    dataSetCreatedBy = db.Column(db.Integer)
+    dataSetUpdatedBy = db.Column(db.Integer)
+
+    def __init__(self, **kwargs):
+        for property, value in kwargs.items():
+            # depending on whether value is an iterable or not, we must
+            # unpack it's value (when **kwargs is request.form, some values
+            # will be a 1-element list)
+            if hasattr(value, '__iter__') and not isinstance(value, str):
+                # the ,= unpack of a singleton fails PEP8 (travis flake8 test)
+                value = value[0]
+
+            setattr(self, property, value)
+
+    def __repr__(self):
+        return str(self.dataDomain)
