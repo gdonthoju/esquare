@@ -6,7 +6,7 @@ Copyright (c) 2019 - present eSquare
 from importlib.resources import contents
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField, FileField
+from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField, FileField, BooleanField
 from wtforms.validators import Email, DataRequired
 
 # login and registration
@@ -80,16 +80,6 @@ class CreateDataProducerForm(FlaskForm):
                          validators=[DataRequired()])
 
 class UploadDataProducersExcelForm(FlaskForm):
-    excelFilePath = FileField('Excel File Path',
-                         id='excelFilePath',
-                         validators=[DataRequired()])
-
-class UploadDataConsumersExcelForm(FlaskForm):
-    excelFilePath = FileField('Excel File Path',
-                         id='excelFilePath',
-                         validators=[DataRequired()])
-
-class UploadDataSourcesExcelForm(FlaskForm):
     excelFilePath = FileField('Excel File Path',
                          id='excelFilePath',
                          validators=[DataRequired()])
@@ -169,6 +159,11 @@ class CreateDataConsumerForm(FlaskForm):
                          id='msg_batch_apis_type',
                          validators=[DataRequired()])
 
+class UploadDataConsumersExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
 class EditDataConsumerForm(FlaskForm):
     id = HiddenField('id',id='id')
     consumerApplicationName = TextField('Consumer Application Name',
@@ -241,6 +236,11 @@ class CreateDataSourceForm(FlaskForm):
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
 
+class UploadDataSourcesExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
 class EditDataSourceForm(FlaskForm):
     id = HiddenField('id',id='id')
     applicationName = TextField('Data Source Name',
@@ -273,5 +273,201 @@ class EditDataSourceForm(FlaskForm):
                          validators=[DataRequired(), Email()])
     additionalInformation = TextAreaField('Additional Information',
                          id='additionalInformation',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+
+class CreateBusinessGlossaryForm(FlaskForm):
+    businessGlossaryTerm = TextField('Business Glossary Term',
+                         id='businessGlossaryTerm',
+                         validators=[DataRequired()])
+    businessDefinition = TextAreaField('Business Definition',
+                         id='businessDefinition',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    businessDomain = TextField('Business Domain',
+                         id='businessDomain',
+                         validators=[DataRequired()])
+    termSource = TextField('Term Source',
+                         id='termSource',
+                         validators=[DataRequired()])
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    businessSteward = TextField('Business Steward',
+                         id='businessSteward',
+                         validators=[DataRequired()])
+
+class UploadBusinessGlossarysExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
+class EditBusinessGlossaryForm(FlaskForm):
+    id = HiddenField('id',id='id')
+    businessGlossaryTerm = TextField('Business Glossary Term',
+                         id='businessGlossaryTerm',
+                         validators=[DataRequired()])
+    businessDefinition = TextAreaField('Business Definition',
+                         id='businessDefinition',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    businessDomain = TextField('Business Domain',
+                         id='businessDomain',
+                         validators=[DataRequired()])
+    termSource = TextField('Term Source',
+                         id='termSource',
+                         validators=[DataRequired()])
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    businessSteward = TextField('Business Steward',
+                         id='businessSteward',
+                         validators=[DataRequired()])
+
+class CreateDataCatalogueForm(FlaskForm):
+    attributeName = TextField('Attribute Name',
+                         id='attributeName',
+                         validators=[DataRequired()])
+    attributeDescription = TextAreaField('Attribute Description',
+                         id='attributeDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    tableName = TextField('Table Name',
+                         id='tableName',
+                         validators=[DataRequired()])
+    columnName = TextField('Column Name',
+                         id='columnName',
+                         validators=[DataRequired()])
+    columnDescription = TextAreaField('Column Description',
+                         id='columnDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    columnDatatype = SelectField('Column Datatype',
+                      choices=[('INT', 'INTEGER'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
+                      id='columnDatatype',
+                      validators=[DataRequired()])
+    isNullable = BooleanField('Is Nullable',
+                    id='isNullable')
+    isPrimaryKey = BooleanField('Is Primary Key',
+                    id='isPrimaryKey')
+    isForeignKey = BooleanField('Is Foreign Key',
+                    id='isForeignKey')
+    attributeSensitivity = TextField('Attribute Sensitivity',
+                         id='attributeSensitivity',
+                         validators=[])
+    termSource = TextField('Term Source',
+                         id='termSource',
+                         validators=[DataRequired()])
+    possibleValues = TextAreaField('Possible Values',
+                         id='possibleValues',
+                         render_kw={'class': 'form-control', 'rows': 5, 'placeholder':'Provide pipe(|) delimited for multiple values'},
+                         validators=[DataRequired()])
+    valuesDescription = TextAreaField('Values Description',
+                         id='valuesDescription',
+                         render_kw={'class': 'form-control', 'rows': 5, 'placeholder':'Provide pipe(|) delimited for multiple values corresponding to possible values'},
+                         validators=[])
+    notes = TextAreaField('Notes',
+                         id='notes',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+
+class UploadDataCataloguesExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
+class EditDataCatalogueForm(FlaskForm):
+    id = HiddenField('id',id='id')
+    attributeName = TextField('Attribute Name',
+                         id='attributeName',
+                         validators=[DataRequired()])
+    attributeDescription = TextAreaField('Attribute Description',
+                         id='attributeDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    tableName = TextField('Table Name',
+                         id='tableName',
+                         validators=[DataRequired()])
+    columnName = TextField('Column Name',
+                         id='columnName',
+                         validators=[DataRequired()])
+    columnDescription = TextAreaField('Column Description',
+                         id='columnDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+    columnDatatype = SelectField('Column Datatype',
+                      choices=[('INT', 'INTEGER'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
+                      id='columnDatatype',
+                      validators=[DataRequired()])
+    isNullable = BooleanField('Is Nullable',
+                    id='isNullable')
+    isPrimaryKey = BooleanField('Is Primary Key',
+                    id='isPrimaryKey')
+    isForeignKey = BooleanField('Is Foreign Key',
+                    id='isForeignKey')
+    attributeSensitivity = TextField('Attribute Sensitivity',
+                         id='attributeSensitivity',
+                         validators=[])
+    termSource = TextField('Term Source',
+                         id='termSource',
+                         validators=[DataRequired()])
+    possibleValues = TextAreaField('Possible Values',
+                         id='possibleValues',
+                         render_kw={'class': 'form-control', 'rows': 5, 'placeholder':'Provide pipe(|) delimited for multiple values'},
+                         validators=[DataRequired()])
+    valuesDescription = TextAreaField('Values Description',
+                         id='valuesDescription',
+                         render_kw={'class': 'form-control', 'rows': 5, 'placeholder':'Provide pipe(|) delimited for multiple values corresponding to possible values'},
+                         validators=[])
+    notes = TextAreaField('Notes',
+                         id='notes',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+                         
+class CreateDataSetForm(FlaskForm):
+    dataSetName = TextField('Data Set Name',
+                         id='dataSetName',
+                         validators=[DataRequired()])
+    dataSetDescription = TextAreaField('Data Set Description',
+                         id='dataSetDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+
+class UploadDataSetsExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
+class EditDataSetForm(FlaskForm):
+    id = HiddenField('id',id='id')
+    dataSetName = TextField('Data Set Name',
+                         id='dataSetName',
+                         validators=[DataRequired()])
+    dataSetDescription = TextAreaField('Data Set Description',
+                         id='dataSetDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+                         
+class CreateDataDomainForm(FlaskForm):
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    dataDomainDescription = TextAreaField('Data Domain Description',
+                         id='dataDomainDescription',
+                         render_kw={'class': 'form-control', 'rows': 5},
+                         validators=[DataRequired()])
+
+class UploadDataDomainsExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
+
+class EditDataDomainForm(FlaskForm):
+    id = HiddenField('id',id='id')
+    dataDomain = TextField('Data Domain',
+                         id='dataDomain',
+                         validators=[DataRequired()])
+    dataDomainDescription = TextAreaField('Data Domain Description',
+                         id='dataDomainDescription',
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])

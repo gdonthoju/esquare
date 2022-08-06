@@ -203,9 +203,9 @@ class eSquareDataCatalogue(db.Model):
     __tablename__ = 'eSquareDataCatalogue'
 
     id = db.Column(db.Integer, primary_key=True)
-    tableName = db.Column(db.String(255))
     attributeName = db.Column(db.String(255))
     attributeDescription = db.Column(db.String(1024))
+    tableName = db.Column(db.String(255))
     columnName = db.Column(db.String(255))
     columnDescription = db.Column(db.String(1024))
     columnDatatype = db.Column(db.String(32))
