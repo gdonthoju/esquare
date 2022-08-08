@@ -447,6 +447,11 @@ class EditDataSetForm(FlaskForm):
                          id='dataSetDescription',
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
+
+class UploadDataSetElementsExcelForm(FlaskForm):
+    excelFilePath = FileField('Excel File Path',
+                         id='excelFilePath',
+                         validators=[DataRequired()])
                          
 class CreateDataDomainForm(FlaskForm):
     dataDomain = TextField('Data Domain',
