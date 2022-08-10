@@ -8,8 +8,8 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
-from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm
+from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary
+from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm
 import pandas
 from werkzeug.utils import secure_filename
 import os
@@ -158,9 +158,9 @@ def route_data_sources():
                 print(dataItem)
                 # os.remove(UPLOAD_FOLDER + filename)
         return redirect("data_sources")
-        # return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+        # return render_template("home/business_glossary.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
     else:
-        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+        return render_template("home/business_glossary.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
 
 @blueprint.route('/data_producers', methods=['GET', 'POST'])
 @login_required
@@ -267,3 +267,52 @@ def route_data_consumers():
     else:
         return render_template("home/data_consumers.html", data_consumers=data_consumers, segment=segment,
                                form=upload_data_consumers_excel_form)
+
+@blueprint.route('/business_glossary', methods=['GET', 'POST'])
+@login_required
+def route_business_glossary():
+    # Detect the current page
+    segment = get_segment(request)
+    upload_business_glossary_excel_form = UploadBusinessGlossarysExcelForm(request.form)
+    business_glossary = eSquareBusinessGlossary.query.all()
+    if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
+        
+        if 'excelFilePath' not in request.files:
+            flash('No file part')
+            print('No file part')
+        file = request.files['excelFilePath']
+        print('file data' , file)
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            print('No selected file')
+            flash('No selected file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            print("FILENAME" , UPLOAD_FOLDER + filename);
+            excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
+            # print("excelData",excelData.to_dict())
+            excelDataAsList = excelData.values.tolist()
+
+            for dataItem in excelDataAsList:
+                businessGlossaryExcelRowAdd = {}
+
+                businessGlossaryExcelRowAdd['businessGlossaryTerm'] = dataItem[0]
+                businessGlossaryExcelRowAdd['businessDefinition'] = dataItem[1]
+                businessGlossaryExcelRowAdd['businessDomain'] = dataItem[2]
+                businessGlossaryExcelRowAdd['termSource'] = dataItem[3]
+                businessGlossaryExcelRowAdd['dataDomain'] = dataItem[4]
+                businessGlossaryExcelRowAdd['businessSteward'] = dataItem[5]
+                businessGlossaryExcelRowAdd['businessGlossaryOn'] = int(datetime.datetime.now().timestamp() * 1000)
+                businessGlossaryExcelRowAdd['businessGlossaryBy'] = current_user.get_id()
+                businessGlossaryAdd = eSquareBusinessGlossary(**businessGlossaryExcelRowAdd)
+                # print(dataProducerAdd)
+                db.session.add(businessGlossaryAdd)
+                db.session.commit()
+                print(dataItem)
+                # os.remove(UPLOAD_FOLDER + filename)
+        return redirect("business_glossary")
+        # return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
+    else:
+        return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)

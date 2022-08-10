@@ -1,0 +1,170 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Business Glossary {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid py-2">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 mx-auto">
+          <div class="card mt-4">
+            <div class="card-header p-3">
+              <span><h5 class="mb-0" style="display: inline-block;">Business Glossary</h5></span>
+              <span><a href="business-glossary-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add</a></span>
+              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-secondary w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#excelUploadModal"><i class="material-icons text-sm my-auto me-1">upload</i></button></span>
+
+              <!-- Modal -->
+              <div class="modal fade" id="excelUploadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header text-center">
+                      <h5 class="modal-title" id="exampleModalLabel">Import Data from Excel</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <label class="form-label">Download Business Glossary Excel file template <a href="#">here <i class="material-icons text-sm my-auto me-1">table</i></a></label>
+                      <hr>
+                      <form method="post" action="" enctype=multipart/form-data>
+                        <label class="form-label">Excel File Path</label>
+                        <div class="input-group input-group-outline mb-3">
+                          {{ form.excelFilePath(class="form-control") }}
+                        </div>
+                        <div class="col-auto">
+                          <button type="submit" name="excel_upload_button" class="btn btn-primary mb-3">Upload</button>
+                        </div>
+                      </form>
+                    </div>
+                    <!-- <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="card-body p-3 pb-0">
+              {% if business_glossary %}
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Glossary Term</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Domain</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Term Source</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Steward</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created Info</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in business_glossary %}
+                    <tr>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessGlossaryTerm}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.businessDefinition}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessDomain}}</p>
+                        <p class="text-xs text-secondary mb-0"></p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.termSource}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.dataDomain}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessSteward}}</p>
+                        <p class="text-xs text-secondary mb-0"></p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessGlossaryOn | format_datetime}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.businessGlossaryBy}}</p>
+                      </td>
+                      
+                      <td class="align-middle">
+                        <form method="post" action="business-glossary-edit">
+                          <input type="hidden" name="id" value="{{item.id}}"/>
+                          <input type="hidden" name="businessGlossaryTerm" value="{{item.businessGlossaryTerm}}"/>
+                          <input type="hidden" name="businessDefinition" value="{{item.businessDefinition}}"/>
+                          <input type="hidden" name="businessDomain" value="{{item.businessDomain}}"/>
+                          <input type="hidden" name="termSource" value="{{item.termSource}}"/>
+                          <input type="hidden" name="dataDomain" value="{{item.dataDomain}}"/>
+                          <input type="hidden" name="businessSteward" value="{{item.businessSteward}}"/>
+                          <input type="hidden" name="businessGlossaryOn" value="{{item.businessGlossaryOn}}"/>
+                          <input type="hidden" name="businessGlossaryBy" value="{{item.businessGlossaryBy}}"/>
+                          <input type="submit" class="text-secondary font-weight-bold text-xs" value="Edit">
+                        </form>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+                <h6 class="text-center">No Business Glossary terms found yet</h6>
+              {% endif %} 
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="position-fixed bottom-1 end-1 z-index-2">
+        <div class="toast fade hide p-2 bg-white" role="alert" aria-live="assertive" id="successToast" aria-atomic="true">
+          <div class="toast-header border-0">
+            <i class="material-icons text-success me-2">check</i>
+            <span class="me-auto font-weight-bold">Material Dashboard </span>
+            <small class="text-body">11 mins ago</small>
+            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal dark m-0">
+          <div class="toast-body">
+            Hello, world! This is a notification message.
+          </div>
+        </div>
+        <div class="toast fade hide p-2 mt-2 bg-gradient-info" role="alert" aria-live="assertive" id="infoToast" aria-atomic="true">
+          <div class="toast-header bg-transparent border-0">
+            <i class="material-icons text-white me-2">notifications</i>
+            <span class="me-auto text-white font-weight-bold">Material Dashboard </span>
+            <small class="text-white">11 mins ago</small>
+            <i class="fas fa-times text-md text-white ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal light m-0">
+          <div class="toast-body text-white">
+            Hello, world! This is a notification message.
+          </div>
+        </div>
+        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="warningToast" aria-atomic="true">
+          <div class="toast-header border-0">
+            <i class="material-icons text-warning me-2">travel_explore</i>
+            <span class="me-auto font-weight-bold">Material Dashboard </span>
+            <small class="text-body">11 mins ago</small>
+            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal dark m-0">
+          <div class="toast-body">
+            Hello, world! This is a notification message.
+          </div>
+        </div>
+        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="dangerToast" aria-atomic="true">
+          <div class="toast-header border-0">
+            <i class="material-icons text-danger me-2">campaign</i>
+            <span class="me-auto text-gradient text-danger font-weight-bold">Material Dashboard </span>
+            <small class="text-body">11 mins ago</small>
+            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
+          </div>
+          <hr class="horizontal dark m-0">
+          <div class="toast-body">
+            Hello, world! This is a notification message.
+          </div>
+        </div>
+      </div> -->
+
+    {% include 'includes/footer.html' %}
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

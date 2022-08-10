@@ -209,9 +209,9 @@ class eSquareDataCatalogue(db.Model):
     columnName = db.Column(db.String(255))
     columnDescription = db.Column(db.String(1024))
     columnDatatype = db.Column(db.String(32))
-    isNullable = db.Column(db.Integer(1))
-    isPrimaryKey = db.Column(db.Integer(1))
-    isForeignKey = db.Column(db.Integer(1))
+    isNullable = db.Column(db.Integer())
+    isPrimaryKey = db.Column(db.Integer())
+    isForeignKey = db.Column(db.Integer())
     attributeSensitivity = db.Column(db.String(255))
     termSource = db.Column(db.String(24))
     possibleValues = db.Column(db.String(255))
@@ -288,7 +288,7 @@ class eSquareDataSetFields(db.Model):
 
 class eSquareDataDomains(db.Model):
 
-    __tablename__ = 'eSquareDataSetFields'
+    __tablename__ = 'eSquareDataDomains'
 
     id = db.Column(db.Integer, primary_key=True)
     dataDomain = db.Column(db.String(255))

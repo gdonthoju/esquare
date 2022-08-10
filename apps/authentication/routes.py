@@ -12,8 +12,8 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm
-from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm
+from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary
 
 from apps.authentication.util import verify_pass
 
@@ -509,3 +509,110 @@ def data_consumer_edit():
         return redirect("data_consumers")
     else:
         return render_template('accounts/data-consumer-edit.html', form=data_consumer_edit_form)
+
+# Business Glossary
+
+@blueprint.route('/business-glossary-add', methods=['GET', 'POST'])
+def business_glossary_add():
+    business_glossary_add_form = CreateBusinessGlossaryForm(request.form)
+    if 'add_business_glossary' in request.form.keys():
+        # read form data
+        businessGlossaryTerm = request.form['businessGlossaryTerm']
+        businessDefinition = request.form['businessDefinition']
+        businessDomain = request.form['businessDomain']
+        termSource = request.form['termSource']
+        dataDomain = request.form['dataDomain']
+        businessSteward = request.form['businessSteward']
+        
+        # Check for data-sourcing-add - will be added later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        businessGlossaryAdd = eSquareBusinessGlossary(**request.form)
+        # print(businessGlossaryAdd)
+        businessGlossaryAdd.businessGlossaryOn = int(datetime.datetime.now().timestamp() * 1000)
+        businessGlossaryAdd.businessGlossaryBy = current_user.get_id()
+        db.session.add(businessGlossaryAdd)
+        db.session.commit()
+
+        return render_template('accounts/business-glossary-add.html',
+                               msg='Business Glossary added to eSquare. please <a href="/business_glossary">view here</a>',
+                               success=True,
+                               form=business_glossary_add_form)
+
+    else:
+        return render_template('accounts/business-glossary-add.html', form=business_glossary_add_form)
+
+
+# Business Glossary Edit
+
+@blueprint.route('/business-glossary-edit', methods=['GET', 'POST'])
+def business_glossary_edit():
+    business_glossary_edit_form = EditBusinessGlossaryForm(request.form)
+    print("This is Firing" , request.form.keys())
+    if 'edit_business_glossary' in request.form.keys():
+        # read form data
+        idBusinessGlossary = request.form['id']
+        businessGlossaryTerm = request.form['businessGlossaryTerm']
+        businessDefinition = request.form['businessDefinition']
+        businessDomain = request.form['businessDomain']
+        termSource = request.form['termSource']
+        dataDomain = request.form['dataDomain']
+        businessSteward = request.form['businessSteward']
+        
+        # Check for data-sourcing-edit - will be edited later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        businessGloassaryEdit = eSquareBusinessGlossary(**request.form)
+       
+        updateData = dict(request.form)
+        del updateData['csrf_token']
+        del updateData['edit_business_glossary']
+        
+        
+        updateData['businessGlossaryOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        updateData['businessGlossaryBy'] = current_user.get_id()
+        # print(updateData)
+        eSquareBusinessGlossary.query.filter_by(id=idBusinessGlossary).update(updateData)
+        db.session.commit()
+
+        return render_template('accounts/business-glossary-edit.html',
+                               msg='Business Glossary edited to eSquare. please <a href="/business_glossary">view here</a>',
+                               success=True,
+                               form=business_glossary_edit_form)
+
+    elif 'delete_business_glossary' in request.form.keys():
+        idBusinessGlossary = request.form['id']
+        print("delIdBusinessGlossary", idBusinessGlossary)
+        eSquareBusinessGlossary.query.filter_by(id=idBusinessGlossary).delete()
+        db.session.commit()
+        return redirect("business_glossary")
+    else:
+        return render_template('accounts/business-glossary-edit.html', form=business_glossary_edit_form)
