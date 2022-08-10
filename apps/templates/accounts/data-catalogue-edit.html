@@ -1,0 +1,117 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Edit Data Catalogue {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <section>
+      <div class="page-header min-vh-100">
+        <div class="container">
+          <div class="row">
+            <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
+              <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center" style="background-image: url('/static/assets/img/illustrations/illustration-signup.jpg'); background-size: cover;">
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column ms-auto me-auto ms-lg-auto me-lg-5">
+              <div class="card card-plain">
+                <div class="card-header">
+                  <h4 class="font-weight-bolder">
+                    eSquare Dashboard
+                  </h4>
+                  <p class="mb-0">
+                    {% if msg %}
+                      <span class="text-danger">{{ msg | safe }}</span>
+                    {% else %}
+                      Edit Source Data in to eSquare
+                    {% endif %}                    
+                  </p>
+                </div>
+                <div class="card-body">
+                  <form role="form" method="post" action="">
+                    {{ form.hidden_tag() }}
+                    <label class="form-label">Attribute Name</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.attributeName(class="form-control") }}
+                    </div>
+                    <label class="form-label">Attribute Description</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.attributeDescription(class="form-control") }}
+                    </div>
+                    <label class="form-label">Table Name</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.tableName(class="form-control") }}
+                    </div>
+                    <label class="form-label">Column Name</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.columnName(class="form-control") }}
+                    </div>
+                    <label class="form-label">Column Description</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.columnDescription(class="form-control") }}
+                    </div>
+                    <label class="form-label">Column Datatype</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.columnDatatype(class="form-control") }}
+                    </div>
+                    <label class="form-label">Is Nullable</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.isNullable(class="form-control") }}
+                    </div>
+                    <label class="form-label">Is Primary Key</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.isPrimaryKey(class="form-control") }}
+                    </div>
+                    <label class="form-label">Is Foreign Key</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.isForeignKey(class="form-control") }}
+                    </div>
+                    <label class="form-label">Attribute Sensitivity</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.attributeSensitivity(class="form-control") }}
+                    </div>
+                    <label class="form-label">Term Source</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.termSource(class="form-control") }}
+                    </div>
+                    <label class="form-label">Possible Values</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.possibleValues(class="form-control") }}
+                    </div>
+                    <label class="form-label">Values Description</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.valuesDescription(class="form-control") }}
+                    </div>
+                    <label class="form-label">Notes</label>
+                    <div class="input-group input-group-outline mb-3">
+                      {{ form.notes(class="form-control") }}
+                    </div>
+                    <div class="text-center">
+                      <button type="submit" name="edit_data_catalogue" 
+                              class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Edit Data Catalogue</button>
+                    </div>
+                  </form>
+                  <hr>
+                  <form method="post" action="">
+                    <div class="text-center">
+                      {{ form.id(class="form-control") }}
+                      <button type="submit" name="delete_data_catalogue" 
+                              class="btn btn-lg bg-gradient-danger btn-lg w-100 mt-4 mb-0">Delete Data Catalogue</button>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

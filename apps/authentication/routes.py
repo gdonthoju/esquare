@@ -12,8 +12,8 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm
-from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm, CreateDataCatalogueForm, EditDataCatalogueForm
+from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue
 
 from apps.authentication.util import verify_pass
 
@@ -590,7 +590,7 @@ def business_glossary_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        businessGloassaryEdit = eSquareBusinessGlossary(**request.form)
+        businessGlossaryEdit = eSquareBusinessGlossary(**request.form)
        
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -616,3 +616,127 @@ def business_glossary_edit():
         return redirect("business_glossary")
     else:
         return render_template('accounts/business-glossary-edit.html', form=business_glossary_edit_form)
+
+# Data Catalogue
+
+@blueprint.route('/data-catalogue-add', methods=['GET', 'POST'])
+def data_catalogue_add():
+    data_catalogue_add_form = CreateDataCatalogueForm(request.form)
+    if 'add_data_catalogue' in request.form.keys():
+        # read form data
+        attributeName = request.form['attributeName']
+        attributeDescription = request.form['attributeDescription']
+        tableName = request.form['tableName']
+        columnName = request.form['columnName']
+        columnDescription = request.form['columnDescription']
+        columnDatatype = request.form['columnDatatype']
+        isNullable = request.form['isNullable']
+        isPrimaryKey = request.form['isPrimaryKey']
+        isForeignKey = request.form['isForeignKey']
+        attributeSensitivity = request.form['attributeSensitivity']
+        termSource = request.form['termSource']
+        possibleValues = request.form['possibleValues']
+        valuesDescription = request.form['valuesDescription']
+        notes = request.form['notes']
+        
+        # Check for data-sourcing-add - will be added later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataCatalogueAdd = eSquareDataCatalogue(**request.form)
+        # print(dataCatalogueAdd)
+        dataCatalogueAdd.catalogueAttributeCreatedOn = int(datetime.datetime.now().timestamp() * 1000)
+        dataCatalogueAdd.catalogueAttributeCreatedBy = current_user.get_id()
+        dataCatalogueAdd.catalogueAttributeUpdatedBy = current_user.get_id()
+        db.session.add(dataCatalogueAdd)
+        db.session.commit()
+
+        return render_template('accounts/data-catalogue-add.html',
+                               msg='Data Catalogue Attribute added to eSquare. please <a href="/data_catalogue">view here</a>',
+                               success=True,
+                               form=data_catalogue_add_form)
+
+    else:
+        return render_template('accounts/data-catalogue-add.html', form=data_catalogue_add_form)
+
+
+# Data Catalogue Edit
+
+@blueprint.route('/data-catalogue-edit', methods=['GET', 'POST'])
+def data_catalogue_edit():
+    data_catalogue_edit_form = EditDataCatalogueForm(request.form)
+    print("This is Firing" , request.form.keys())
+    if 'edit_data_catalogue' in request.form.keys():
+        # read form data
+        idDataCatalogue = request.form['id']
+        attributeName = request.form['attributeName']
+        attributeDescription = request.form['attributeDescription']
+        tableName = request.form['tableName']
+        columnName = request.form['columnName']
+        columnDescription = request.form['columnDescription']
+        columnDatatype = request.form['columnDatatype']
+        isNullable = request.form['isNullable']
+        isPrimaryKey = request.form['isPrimaryKey']
+        isForeignKey = request.form['isForeignKey']
+        attributeSensitivity = request.form['attributeSensitivity']
+        termSource = request.form['termSource']
+        possibleValues = request.form['possibleValues']
+        valuesDescription = request.form['valuesDescription']
+        notes = request.form['notes']
+        
+        # Check for data-sourcing-edit - will be edited later
+        # user = Users.query.filter_by(username=username).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Username already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # # Check email exists
+        # user = Users.query.filter_by(email=email).first()
+        # if user:
+        #     return render_template('accounts/register.html',
+        #                            msg='Email already registered',
+        #                            success=False,
+        #                            form=create_account_form)
+
+        # else we can create the user
+        dataCatalogueEdit = eSquareDataCatalogue(**request.form)
+       
+        updateData = dict(request.form)
+        del updateData['csrf_token']
+        del updateData['edit_data_catalogue']
+        
+        
+        updateData['catalogueAttributeCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        updateData['catalogueAttributeUpdatedBy'] = current_user.get_id()
+        # print(updateData)
+        eSquareDataCatalogue.query.filter_by(id=idDataCatalogue).update(updateData)
+        db.session.commit()
+
+        return render_template('accounts/data-catalogue-edit.html',
+                               msg='Data Catalogue edited to eSquare. please <a href="/data_catalogue">view here</a>',
+                               success=True,
+                               form=data_catalogue_edit_form)
+
+    elif 'delete_data_catalogue' in request.form.keys():
+        idDataCatalogue = request.form['id']
+        print("delIdDataCatalogue", idDataCatalogue)
+        eSquareDataCatalogue.query.filter_by(id=idDataCatalogue).delete()
+        db.session.commit()
+        return redirect("data_catalogue")
+    else:
+        return render_template('accounts/data-catalogue-edit.html', form=data_catalogue_edit_form)

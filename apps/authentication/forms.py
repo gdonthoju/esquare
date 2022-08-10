@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present eSquare
 """
 
+from email.policy import default
 from importlib.resources import contents
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
@@ -31,6 +32,11 @@ class CreateAccountForm(FlaskForm):
     password = PasswordField('Password',
                              id='pwd_create',
                              validators=[DataRequired()])
+
+class UniversalSearchForm(FlaskForm):
+    universalSearchField = TextField('Search',
+                         id='universalSearchField',
+                         validators=[DataRequired()])
 
 class CreateObservationForm(FlaskForm):
     observation_type = SelectField('Type',
@@ -343,15 +349,21 @@ class CreateDataCatalogueForm(FlaskForm):
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
     columnDatatype = SelectField('Column Datatype',
-                      choices=[('INT', 'INTEGER'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
+                      choices=[('INT', 'INT'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
                       id='columnDatatype',
                       validators=[DataRequired()])
-    isNullable = BooleanField('Is Nullable',
-                    id='isNullable')
-    isPrimaryKey = BooleanField('Is Primary Key',
-                    id='isPrimaryKey')
-    isForeignKey = BooleanField('Is Foreign Key',
-                    id='isForeignKey')
+    isNullable = SelectField('Is Nullable',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isNullable',
+                      validators=[DataRequired()])
+    isPrimaryKey = SelectField('Is Primary Key',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isPrimaryKey',
+                      validators=[DataRequired()])
+    isForeignKey = SelectField('Is Foreign Key',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isForeignKey',
+                      validators=[DataRequired()])
     attributeSensitivity = TextField('Attribute Sensitivity',
                          id='attributeSensitivity',
                          validators=[])
@@ -396,15 +408,21 @@ class EditDataCatalogueForm(FlaskForm):
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
     columnDatatype = SelectField('Column Datatype',
-                      choices=[('INT', 'INTEGER'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
+                      choices=[('INT', 'INT'), ('CHAR', 'CHAR'), ('DATE', 'DATE')],
                       id='columnDatatype',
                       validators=[DataRequired()])
-    isNullable = BooleanField('Is Nullable',
-                    id='isNullable')
-    isPrimaryKey = BooleanField('Is Primary Key',
-                    id='isPrimaryKey')
-    isForeignKey = BooleanField('Is Foreign Key',
-                    id='isForeignKey')
+    isNullable = SelectField('Is Nullable',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isNullable',
+                      validators=[DataRequired()])
+    isPrimaryKey = SelectField('Is Primary Key',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isPrimaryKey',
+                      validators=[DataRequired()])
+    isForeignKey = SelectField('Is Foreign Key',
+                      choices=[(0, 'No'), (1, 'Yes')],
+                      id='isForeignKey',
+                      validators=[DataRequired()])
     attributeSensitivity = TextField('Attribute Sensitivity',
                          id='attributeSensitivity',
                          validators=[])

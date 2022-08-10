@@ -8,8 +8,8 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary
-from apps.authentication.forms import UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm
+from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue
+from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm
 import pandas
 from werkzeug.utils import secure_filename
 import os
@@ -26,7 +26,18 @@ ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 @login_required
 def index():
 
-    return render_template('home/index.html', segment='index')
+    universal_search_form = UniversalSearchForm(request.form)
+    counts_data = {}
+    counts_data['data_sources_count'] = eSquareDataSources.query.count()
+    counts_data['business_glossary_count'] = eSquareBusinessGlossary.query.count()
+    counts_data['data_catalogue_count'] = eSquareDataCatalogue.query.count()
+    counts_data['hits_count'] = '#'
+    counts_data['data_producers_count'] = eSquareDataProducers.query.count()
+    counts_data['data_consumers_count'] = eSquareDataConsumers.query.count()
+    counts_data['data_sets_count'] = eSquareDataSets.query.count()
+    counts_data['data_observability_count'] = eSquareObservations.query.count()
+
+    return render_template('home/index.html', segment='index', counts_data = counts_data, form = universal_search_form)
 
 
 @blueprint.route('/<template>')
@@ -158,9 +169,9 @@ def route_data_sources():
                 print(dataItem)
                 # os.remove(UPLOAD_FOLDER + filename)
         return redirect("data_sources")
-        # return render_template("home/business_glossary.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+        # return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
     else:
-        return render_template("home/business_glossary.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
 
 @blueprint.route('/data_producers', methods=['GET', 'POST'])
 @login_required
@@ -316,3 +327,73 @@ def route_business_glossary():
         # return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
     else:
         return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
+
+@blueprint.route('/data_catalogue', methods=['GET', 'POST'])
+@login_required
+def route_data_catalogue():
+    # Detect the current page
+    segment = get_segment(request)
+    upload_data_catalogue_excel_form = UploadDataCataloguesExcelForm(request.form)
+    data_catalogue = eSquareDataCatalogue.query.all()
+    if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
+        
+        if 'excelFilePath' not in request.files:
+            flash('No file part')
+            print('No file part')
+        file = request.files['excelFilePath']
+        print('file data' , file)
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            print('No selected file')
+            flash('No selected file')
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            print("FILENAME" , UPLOAD_FOLDER + filename);
+            excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
+            # print("excelData",excelData.to_dict())
+            excelDataAsList = excelData.values.tolist()
+
+            for dataItem in excelDataAsList:
+                dataCatalogueExcelRowAdd = {}
+
+                dataCatalogueExcelRowAdd['attributeName'] = dataItem[0]
+                dataCatalogueExcelRowAdd['attributeDescription'] = dataItem[1]
+                dataCatalogueExcelRowAdd['tableName'] = dataItem[2]
+                dataCatalogueExcelRowAdd['columnName'] = dataItem[3]
+                dataCatalogueExcelRowAdd['columnDescription'] = dataItem[4]
+                dataCatalogueExcelRowAdd['columnDatatype'] = dataItem[5]
+                if dataItem[6] == 'Y':
+                    dataCatalogueExcelRowAdd['isNullable'] = 1
+                else:
+                    dataCatalogueExcelRowAdd['isNullable'] = 0
+
+                if dataItem[7] == 'Y':
+                    dataCatalogueExcelRowAdd['isPrimaryKey'] = 1
+                else:
+                    dataCatalogueExcelRowAdd['isPrimaryKey'] = 0
+
+                if dataItem[8] == 'Y':
+                    dataCatalogueExcelRowAdd['isForeignKey'] = 1
+                else:
+                    dataCatalogueExcelRowAdd['isForeignKey'] = 0
+
+                dataCatalogueExcelRowAdd['attributeSensitivity'] = dataItem[9]
+                dataCatalogueExcelRowAdd['termSource'] = dataItem[10]
+                dataCatalogueExcelRowAdd['possibleValues'] = dataItem[11]
+                dataCatalogueExcelRowAdd['valuesDescription'] = dataItem[12]
+                dataCatalogueExcelRowAdd['notes'] = dataItem[13]
+                dataCatalogueExcelRowAdd['catalogueAttributeCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
+                dataCatalogueExcelRowAdd['catalogueAttributeCreatedBy'] = current_user.get_id()
+                dataCatalogueExcelRowAdd['catalogueAttributeUpdatedBy'] = current_user.get_id()
+                dataCatalogueAdd = eSquareDataCatalogue(**dataCatalogueExcelRowAdd)
+                # print(dataProducerAdd)
+                db.session.add(dataCatalogueAdd)
+                db.session.commit()
+                print(dataItem)
+                # os.remove(UPLOAD_FOLDER + filename)
+        return redirect("data_catalogue")
+        # return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form)
+    else:
+        return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form)
