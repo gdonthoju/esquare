@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Data Catalogue {% endblock %} 
+{% block title %} Data Sets {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -12,9 +12,9 @@
         <div class="col-lg-12 col-md-12 mx-auto">
           <div class="card mt-4">
             <div class="card-header p-3">
-              <span><h5 class="mb-0" style="display: inline-block;">Data Catalogue</h5></span>
-              <span><a href="data-catalogue-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add</a></span>
-              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-secondary w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#excelUploadModal"><i class="material-icons text-sm my-auto me-1">upload</i></button></span>
+              <span><h5 class="mb-0" style="display: inline-block;">Data Sets</h5></span>
+              <!-- <span><a href="business-glossary-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add<i class="material-icons text-sm my-auto me-1">upload</i></a></span> -->
+              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#excelUploadModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
 
               <!-- Modal -->
               <div class="modal fade" id="excelUploadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -25,7 +25,7 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <label class="form-label">Download Data Catalogue Excel file template <a href="/static/excel_file_templates/Data_Catalogue_Excel_File_Template.xlsx">here <i class="material-icons text-sm my-auto me-1">file_download</i></a></label>
+                      <label class="form-label">Download Data Set Excel file template <a href="#">here <i class="material-icons text-sm my-auto me-1">file_download</i></a></label>
                       <hr>
                       <form method="post" action="" enctype=multipart/form-data>
                         <label class="form-label">Excel File Path</label>
@@ -47,106 +47,54 @@
 
             </div>
             <div class="card-body p-3 pb-0">
-              {% if data_catalogue %}
+              {% if data_sets %}
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Attribute Name</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Table Name<br>& Data Type</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Column Name</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Nullable</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Primary Key</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Is Foreign Key</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Attribute Sensitivity<br>& Term Source</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Possible Values</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Notes</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Glossary Term</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Domain</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Term Source</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Steward</th>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created Info</th>
                       <th class="text-secondary opacity-7"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {% for item in data_catalogue %}
+                    {% for item in data_sets %}
                     <tr>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.attributeName}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.attributeDescription}}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessGlossaryTerm}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.businessDefinition}}</p>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.tableName}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.columnDatatype}}</p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.columnName}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.columnDescription}}</p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">
-                          {% if item.isNullable == 1 %}
-                            Y
-                          {% else %}
-                            N
-                          {% endif %}
-                        </p>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessDomain}}</p>
                         <p class="text-xs text-secondary mb-0"></p>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">
-                          {% if item.isPrimaryKey == 1 %}
-                            Y
-                          {% else %}
-                            N
-                          {% endif %}
-                        </p>
+                        <p class="text-xs font-weight-bold mb-0">{{item.termSource}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.dataDomain}}</p>
+                      </td>
+                      <td>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessSteward}}</p>
                         <p class="text-xs text-secondary mb-0"></p>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">
-                          {% if item.isForeignKey == 1 %}
-                            Y
-                          {% else %}
-                            N
-                          {% endif %}
-                        </p>
-                        <p class="text-xs text-secondary mb-0"></p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.attributeSensitivity}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.termSource}}</p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.possibleValues}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.valuesDescription}}</p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.notes}}</p>
-                        <p class="text-xs text-secondary mb-0"></p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.catalogueAttributeCreatedOn | format_datetime}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.catalogueAttributeCreatedBy}} | {{item.catalogueAttributeUpdatedBy}}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{item.businessGlossaryOn | format_datetime}}</p>
+                        <p class="text-xs text-secondary mb-0">{{item.businessGlossaryBy}}</p>
                       </td>
                       
                       <td class="align-middle">
-                        <form method="post" action="data-catalogue-edit">
+                        <form method="post" action="business-glossary-edit">
                           <input type="hidden" name="id" value="{{item.id}}"/>
-                          <input type="hidden" name="attributeName" value="{{item.attributeName}}"/>
-                          <input type="hidden" name="attributeDescription" value="{{item.attributeDescription}}"/>
-                          <input type="hidden" name="tableName" value="{{item.tableName}}"/>
-                          <input type="hidden" name="columnName" value="{{item.columnName}}"/>
-                          <input type="hidden" name="columnDescription" value="{{item.columnDescription}}"/>
-                          <input type="hidden" name="columnDatatype" value="{{item.columnDatatype}}"/>
-                          <input type="hidden" name="isNullable" value="{{item.isNullable}}"/>
-                          <input type="hidden" name="isPrimaryKey" value="{{item.isPrimaryKey}}"/>
-                          <input type="hidden" name="isForeignKey" value="{{item.isForeignKey}}"/>
-                          <input type="hidden" name="attributeSensitivity" value="{{item.attributeSensitivity}}"/>
+                          <input type="hidden" name="businessGlossaryTerm" value="{{item.businessGlossaryTerm}}"/>
+                          <input type="hidden" name="businessDefinition" value="{{item.businessDefinition}}"/>
+                          <input type="hidden" name="businessDomain" value="{{item.businessDomain}}"/>
                           <input type="hidden" name="termSource" value="{{item.termSource}}"/>
-                          <input type="hidden" name="possibleValues" value="{{item.possibleValues}}"/>
-                          <input type="hidden" name="valuesDescription" value="{{item.valuesDescription}}"/>
-                          <input type="hidden" name="notes" value="{{item.notes}}"/>
-                          <input type="hidden" name="catalogueAttributeCreatedOn" value="{{item.catalogueAttributeCreatedOn}}"/>
-                          <input type="hidden" name="catalogueAttributeCreatedBy" value="{{item.catalogueAttributeCreatedBy}}"/>
-                          <input type="hidden" name="catalogueAttributeUpdatedBy" value="{{item.catalogueAttributeUpdatedBy}}"/>
+                          <input type="hidden" name="dataDomain" value="{{item.dataDomain}}"/>
+                          <input type="hidden" name="businessSteward" value="{{item.businessSteward}}"/>
+                          <input type="hidden" name="businessGlossaryOn" value="{{item.businessGlossaryOn}}"/>
+                          <input type="hidden" name="businessGlossaryBy" value="{{item.businessGlossaryBy}}"/>
                           <input type="submit" class="text-secondary font-weight-bold text-xs" value="Edit">
                         </form>
                       </td>
@@ -156,7 +104,7 @@
                 </table>
               </div>
               {% else %}
-                <h6 class="text-center">No Data Catalogue terms added</h6>
+                <h6 class="text-center">No Data Sets added</h6>
               {% endif %} 
             </div>
           </div>
