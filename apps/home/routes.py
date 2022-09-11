@@ -9,8 +9,9 @@ from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue, eSquareDataSetFields
-from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm
+from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm, EditDataSetForm
 import pandas
+import numpy
 from werkzeug.utils import secure_filename
 import os
 import datetime
@@ -405,7 +406,8 @@ def route_data_sets():
     # Detect the current page
     segment = get_segment(request)
     upload_data_set_form = CreateDataSetForm(request.form)
-    data_set = eSquareDataSets.query.all()
+    data_sets = eSquareDataSets.query.all()
+    print("data_sets : ", data_sets)
 
     if request.method == 'POST' and 'upload_dataset_button' in request.form.keys():
         dataSetName = request.form['dataSetName']
@@ -465,4 +467,50 @@ def route_data_sets():
         return redirect("data_sets")
         # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
     else:
-        return render_template("home/data_sets.html", data_set=data_set, segment=segment, form=upload_data_set_form)
+        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form)
+
+
+@blueprint.route('/data_set/<data_set_id>', methods=['GET', 'POST'])
+@login_required
+def route_data_set(data_set_id):
+    # Detect the current page
+    segment = get_segment(request)
+    edit_data_set_form = EditDataSetForm(request.form)
+    data_set_field_names = eSquareDataSetFields.query.with_entities(eSquareDataSetFields.dataSetFieldName).filter_by(dataSetId=data_set_id).distinct()
+    data_set_details = eSquareDataSets.query.filter_by(id=data_set_id)
+
+    data_set_field_details_from_db = eSquareDataSetFields.query.filter_by(dataSetId=data_set_id)
+    data_set_field_details = {}
+    data_set_display_field_details = []
+    for item in data_set_field_details_from_db:
+        if item.dataSetFieldName in data_set_field_details:
+            data_set_field_details[item.dataSetFieldName].append(item.dataSetFieldValue)
+        else:
+            data_set_field_details[item.dataSetFieldName] = []
+            data_set_field_details[item.dataSetFieldName].append(item.dataSetFieldValue)
+
+    # print("data_set_field_details_before_transpose : " , data_set_field_details)
+
+    for listIter in data_set_field_details:
+        data_set_display_field_details.append(data_set_field_details[listIter])
+
+    # print("data_set_display_field_details : " , data_set_display_field_details)
+    data_set_display_field_details = numpy.array(data_set_display_field_details).transpose().tolist()
+    
+
+    # print("data_set_id" , data_set_id)
+    # print("data_sets : ", data_set_details)
+    # print("data_set_display_field_detailsxxxx : ", data_set_display_field_details)
+    # print("data_set_field_names : ", data_set_field_names)
+
+    if request.method == 'POST' and 'delete_data_set' in request.form.keys():
+        idDataSet = data_set_id
+        print("delIdDataSet", idDataSet)
+        eSquareDataSetFields.query.filter_by(dataSetId=idDataSet).delete()
+        db.session.commit()
+        eSquareDataSets.query.filter_by(id=idDataSet).delete()
+        db.session.commit()
+        return redirect("data_sets")
+        # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
+    else:
+        return render_template("home/data_set.html", data_set_details=data_set_details, data_set_field_names=data_set_field_names, data_set_display_field_details=data_set_display_field_details , segment=segment, form=edit_data_set_form)

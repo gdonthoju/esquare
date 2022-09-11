@@ -12,38 +12,29 @@
         <div class="col-lg-12 col-md-12 mx-auto">
           <div class="card mt-4">
             <div class="card-header p-3">
-              <span><h5 class="mb-0" style="display: inline-block;">Data Sets</h5></span>
-              <!-- <span><a href="business-glossary-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add<i class="material-icons text-sm my-auto me-1">upload</i></a></span> -->
-              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#uploadDataSetModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
+              <span><h5 class="mb-0" style="display: inline-block;">Data Set Details</h5></span>
+              <span><a href="/data_sets" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-auto my-0 mb-0"><i class="material-icons text-sm my-auto me-1">arrow_back_ios</i></a></span>
+              <!-- <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#deleteDataSetModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span> -->
 
               <!-- Modal -->
-              <div class="modal fade" id="uploadDataSetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal fade" id="deleteDataSetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header text-center">
-                      <h5 class="modal-title" id="exampleModalLabel">Add Data Set</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <!-- <label class="form-label">Download Data Set Excel file template <a href="#">here <i class="material-icons text-sm my-auto me-1">file_download</i></a></label>
-                      <hr> -->
-                      <form method="post" action="" enctype=multipart/form-data>
-                        <label class="form-label">Data Set Name</label>
-                        <div class="input-group input-group-outline mb-3">
-                          {{ form.dataSetName(class="form-control") }}
-                        </div>
-                        <label class="form-label">Data Set Description</label>
-                        <div class="input-group input-group-outline mb-3">
-                          {{ form.dataSetDescription(class="form-control") }}
-                        </div>
-                        <label class="form-label">Upload File Path</label>
-                        <div class="input-group input-group-outline mb-3">
-                          {{ form.excelFilePath(class="form-control") }}
-                        </div>
-                        <div class="col-auto">
-                          <button type="submit" name="upload_dataset_button" class="btn btn-primary mb-3">Upload</button>
+                      <label class="form-label text-center font-weight-bolder">Are you sure?</label>
+                      <form method="post" action="">
+                        <div class="text-center">
+                          {{ form.id(class="form-control") }}
+                          <button type="submit" name="delete_data_set" 
+                                  class="btn btn-lg bg-gradient-danger btn-lg w-100 mt-4 mb-0">Delete Data Set</button>
                         </div>
                       </form>
+                      <button type="submit" data-bs-dismiss="modal" name="close_delete_pop_up" 
+                                  class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Close</button>
                     </div>
                     <!-- <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -52,48 +43,70 @@
                   </div>
                 </div>
               </div>
-
+              <hr>
+              <div>
+                {% if data_set_details %}
+                {% for data_set_detail in data_set_details %}
+                <div class="row">
+                  <div class="col-6">
+                    <span class="col-">
+                      <p class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Data Set Name</p>
+                    </span>
+                    <span>
+                      <p class="text-s font-weight-bold">{{data_set_detail.dataSetName}}</p>
+                    </span>
+                  </div>
+                  <div class="col-6">
+                    <span class="col-">
+                      <p class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Data Set Description</p>
+                    </span>
+                    <span>
+                      <p class="text-s ">{{data_set_detail.dataSetDescription}}</p>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <span class="col-">
+                    <p class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Data Set Creation Info</p>
+                  </span>
+                  <span>
+                    <p class="text-s font-weight-bold">{{data_set_detail.dataSetCreatedBy}}</p>
+                    <p class="text-xs text-secondary mb-0">{{data_set_detail.dataSetCreatedOn | format_datetime}}</p>
+                  </span>
+                </div>
+                <div class="col-6">
+                  <span class="col-"><button type="button" class="btn bg-gradient-warning w-auto" data-bs-toggle="modal" data-bs-target="#deleteDataSetModal">Delete Data Set<i class="material-icons text-sm my-auto me-1">delete</i></button></span>
+                  <span>
+                    <p class="text-s "></p>
+                  </span>
+                </div>
+                {% endfor %}
+                {% endif %} 
+              </div>
+              <hr>
             </div>
             <div class="card-body p-3 pb-0">
-              {% if data_sets %}
+              
+              <span><h6 class="mb-0" style="display: inline-block;">Data Set Field Details</h6></span>
+              {% if data_set_field_names %}
               <div class="table-responsive p-0">
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Set Name</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Set Description</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created Info</th>
-                      <th class="text-secondary opacity-7"></th>
+                      {% for data_set_field_name in data_set_field_names %}
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">{{data_set_field_name[0]}}</th>
+                      {% endfor %}
                     </tr>
                   </thead>
                   <tbody>
-                    {% for item in data_sets %}
+                    {% for item in data_set_display_field_details %}
                     <tr>
+                      {% for iterItem in item %}
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.dataSetName}}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{iterItem}}</p>
                         <p class="text-xs text-secondary mb-0"></p>
                       </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.dataSetDescription}}</p>
-                        <p class="text-xs text-secondary mb-0"></p>
-                      </td>
-                      <td>
-                        <p class="text-xs font-weight-bold mb-0">{{item.dataSetCreatedOn | format_datetime}}</p>
-                        <p class="text-xs text-secondary mb-0">{{item.dataSetCreatedBy}}</p>
-                      </td>
-                      
-                      <td class="align-middle">
-                        <a type="button" class="btn-view btn bg-gradient-info" href="data_set/{{item.id}}"><i class="material-icons text-sm my-auto">visibility</i></a>
-                        <!-- <button type="button" class="btn-delete btn bg-gradient-warning"><i class="material-icons text-sm my-auto">delete</i></button> -->
-                        <!-- <form method="post" action="data-set-edit">
-                          <input type="hidden" name="id" value="{{item.id}}"/>
-                          <input type="hidden" name="dataSetName" value="{{item.dataSetName}}"/>
-                          <input type="hidden" name="dataSetDescription" value="{{item.dataSetDescription}}"/>
-                          <input type="hidden" name="dataSetCreatedOn" value="{{item.dataSetCreatedOn}}"/>
-                          <input type="hidden" name="dataSetCreatedBy" value="{{item.dataSetCreatedBy}}"/>
-                          <input type="submit" class="text-secondary font-weight-bold text-xs" value="Edit">
-                        </form> -->
-                      </td>
+                      {% endfor %}
                     </tr>
                     {% endfor %}
                   </tbody>
