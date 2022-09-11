@@ -466,6 +466,9 @@ def route_data_sets():
                     db.session.commit()
         return redirect("data_sets")
         # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
+    elif request.method == 'GET' and 'q' in request.form.keys():
+        print("search_param" , request.args.get['q'])
+        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form)
     else:
         return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form)
 
