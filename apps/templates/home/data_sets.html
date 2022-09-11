@@ -14,26 +14,34 @@
             <div class="card-header p-3">
               <span><h5 class="mb-0" style="display: inline-block;">Data Sets</h5></span>
               <!-- <span><a href="business-glossary-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add<i class="material-icons text-sm my-auto me-1">upload</i></a></span> -->
-              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#excelUploadModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
+              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#uploadDataSetModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
 
               <!-- Modal -->
-              <div class="modal fade" id="excelUploadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal fade" id="uploadDataSetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header text-center">
-                      <h5 class="modal-title" id="exampleModalLabel">Import Data from Excel</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Add Data Set</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <label class="form-label">Download Data Set Excel file template <a href="#">here <i class="material-icons text-sm my-auto me-1">file_download</i></a></label>
-                      <hr>
+                      <!-- <label class="form-label">Download Data Set Excel file template <a href="#">here <i class="material-icons text-sm my-auto me-1">file_download</i></a></label>
+                      <hr> -->
                       <form method="post" action="" enctype=multipart/form-data>
-                        <label class="form-label">Excel File Path</label>
+                        <label class="form-label">Data Set Name</label>
+                        <div class="input-group input-group-outline mb-3">
+                          {{ form.dataSetName(class="form-control") }}
+                        </div>
+                        <label class="form-label">Data Set Description</label>
+                        <div class="input-group input-group-outline mb-3">
+                          {{ form.dataSetDescription(class="form-control") }}
+                        </div>
+                        <label class="form-label">Upload File Path</label>
                         <div class="input-group input-group-outline mb-3">
                           {{ form.excelFilePath(class="form-control") }}
                         </div>
                         <div class="col-auto">
-                          <button type="submit" name="excel_upload_button" class="btn btn-primary mb-3">Upload</button>
+                          <button type="submit" name="upload_dataset_button" class="btn btn-primary mb-3">Upload</button>
                         </div>
                       </form>
                     </div>

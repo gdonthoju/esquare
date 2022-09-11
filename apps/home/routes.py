@@ -8,8 +8,8 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue, eSquareDataSetFields, eSquareDataSets
-from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, UploadDataSetsExcelForm
+from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue, eSquareDataSetFields
+from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm
 import pandas
 from werkzeug.utils import secure_filename
 import os
@@ -404,10 +404,27 @@ def route_data_catalogue():
 def route_data_sets():
     # Detect the current page
     segment = get_segment(request)
-    upload_data_set_excel_form = UploadDataSetsExcelForm(request.form)
+    upload_data_set_form = CreateDataSetForm(request.form)
     data_set = eSquareDataSets.query.all()
-    if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
-        
+
+    if request.method == 'POST' and 'upload_dataset_button' in request.form.keys():
+        dataSetName = request.form['dataSetName']
+        dataSetDescription = request.form['dataSetDescription']
+        print("dataSetName : " , dataSetName)
+        print("dataSetDescription : " , dataSetDescription)
+        dataSetValues = {}
+        dataSetValues['dataSetName'] = dataSetName
+        dataSetValues['dataSetDescription'] = dataSetDescription
+        dataSetValues['dataSetCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
+        dataSetValues['dataSetCreatedBy'] = current_user.get_id()
+        dataSetValues['dataSetUpdatedBy'] = current_user.get_id()
+
+        dataSetAdd = eSquareDataSets(**dataSetValues)
+        db.session.add(dataSetAdd)
+        db.session.commit()
+        dataSetID = dataSetAdd.id
+        print("dataSetID : " , dataSetID)
+
         if 'excelFilePath' not in request.files:
             flash('No file part')
             print('No file part')
@@ -422,49 +439,30 @@ def route_data_sets():
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
             print("FILENAME" , UPLOAD_FOLDER + filename);
-            excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
-            # print("excelData",excelData.to_dict())
+            excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',header=0,dtype=object)
+            # print("excelDataHead",excelData.head().to_dict())
+            
+            excelDataHead = excelData.head().keys().to_list()
+            # print("excelDataHead",excelDataHead)
             excelDataAsList = excelData.values.tolist()
+            # print("excelData",excelDataAsList)
 
             for dataItem in excelDataAsList:
-                dataSetExcelRowAdd = {}
+                for iter in range(len(excelDataHead)):
+                    # print("iter : ",iter)
+                    # print(excelDataHead[iter],dataItem[iter])
+                    dataSetExcelRowAdd = {}
+                    dataSetExcelRowAdd['dataSetId'] = dataSetID
+                    dataSetExcelRowAdd['dataSetFieldName'] = excelDataHead[iter]
+                    dataSetExcelRowAdd['dataSetFieldValue'] = dataItem[iter]
+                    dataSetExcelRowAdd['dataSetCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
+                    dataSetExcelRowAdd['dataSetCreatedBy'] = current_user.get_id()
+                    dataSetExcelRowAdd['dataSetUpdatedBy'] = current_user.get_id()
 
-                dataSetExcelRowAdd['attributeName'] = dataItem[0]
-                dataSetExcelRowAdd['attributeDescription'] = dataItem[1]
-                dataSetExcelRowAdd['tableName'] = dataItem[2]
-                dataSetExcelRowAdd['columnName'] = dataItem[3]
-                dataSetExcelRowAdd['columnDescription'] = dataItem[4]
-                dataSetExcelRowAdd['columnDatatype'] = dataItem[5]
-                if dataItem[6] == 'Y':
-                    dataSetExcelRowAdd['isNullable'] = 1
-                else:
-                    dataSetExcelRowAdd['isNullable'] = 0
-
-                if dataItem[7] == 'Y':
-                    dataSetExcelRowAdd['isPrimaryKey'] = 1
-                else:
-                    dataSetExcelRowAdd['isPrimaryKey'] = 0
-
-                if dataItem[8] == 'Y':
-                    dataSetExcelRowAdd['isForeignKey'] = 1
-                else:
-                    dataSetExcelRowAdd['isForeignKey'] = 0
-
-                dataSetExcelRowAdd['attributeSensitivity'] = dataItem[9]
-                dataSetExcelRowAdd['termSource'] = dataItem[10]
-                dataSetExcelRowAdd['possibleValues'] = dataItem[11]
-                dataSetExcelRowAdd['valuesDescription'] = dataItem[12]
-                dataSetExcelRowAdd['notes'] = dataItem[13]
-                dataSetExcelRowAdd['setAttributeCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
-                dataSetExcelRowAdd['setAttributeCreatedBy'] = current_user.get_id()
-                dataSetExcelRowAdd['setAttributeUpdatedBy'] = current_user.get_id()
-                dataSetAdd = eSquareDataSets(**dataSetExcelRowAdd)
-                # print(dataProducerAdd)
-                db.session.add(dataSetAdd)
-                db.session.commit()
-                print(dataItem)
-                # os.remove(UPLOAD_FOLDER + filename)
-        return redirect("data_set")
-        # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_excel_form)
+                    dataSetFieldsAdd = eSquareDataSetFields(**dataSetExcelRowAdd)
+                    db.session.add(dataSetFieldsAdd)
+                    db.session.commit()
+        return redirect("data_sets")
+        # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
     else:
-        return render_template("home/data_sets.html", data_set=data_set, segment=segment, form=upload_data_set_excel_form)
+        return render_template("home/data_sets.html", data_set=data_set, segment=segment, form=upload_data_set_form)

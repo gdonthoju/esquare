@@ -12,7 +12,7 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm, CreateDataCatalogueForm, EditDataCatalogueForm
+from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm, CreateDataCatalogueForm, EditDataCatalogueForm, CreateDataSetForm
 from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue
 
 from apps.authentication.util import verify_pass
