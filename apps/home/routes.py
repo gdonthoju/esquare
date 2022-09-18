@@ -29,6 +29,9 @@ ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 def index():
 
     universal_search_form = UniversalSearchForm(request.form)
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+    
     counts_data = {}
     counts_data['data_sources_count'] = eSquareDataSources.query.count()
     counts_data['business_glossary_count'] = eSquareBusinessGlossary.query.count()
@@ -39,7 +42,7 @@ def index():
     counts_data['data_sets_count'] = eSquareDataSets.query.count()
     counts_data['data_observability_count'] = eSquareObservations.query.count()
 
-    return render_template('home/index.html', segment='index', counts_data = counts_data, form = universal_search_form)
+    return render_template('home/index.html', segment='index', counts_data = counts_data, form = universal_search_form, search_form=search_query_form, search_query=search_query)
 
 
 @blueprint.route('/<template>')
