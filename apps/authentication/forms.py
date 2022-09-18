@@ -498,5 +498,5 @@ class EditDataDomainForm(FlaskForm):
 class SearchQueryForm(FlaskForm):
     search_query = SearchField('Search',
                          id='searchQuery',
-                         render_kw={'class': 'form-control', 'placeholder':'String'},
+                         render_kw={'class': 'form-control', 'placeholder':'Search'},
                          validators=[])

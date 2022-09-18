@@ -144,7 +144,7 @@ def route_data_sources():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME" , UPLOAD_FOLDER + filename);
+            print("FILENAME" , UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
             # print("excelData",excelData.to_dict())
             excelDataAsList = excelData.values.tolist()
@@ -197,7 +197,7 @@ def route_data_producers():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME" , UPLOAD_FOLDER + filename);
+            print("FILENAME" , UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
             # print("excelData",excelData.to_dict())
             excelDataAsList = excelData.values.tolist()
@@ -250,7 +250,7 @@ def route_data_consumers():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME", UPLOAD_FOLDER + filename);
+            print("FILENAME", UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename, engine='openpyxl', dtype=object)
             # print("excelData",excelData.to_dict())
             excelDataAsList = excelData.values.tolist()
@@ -303,7 +303,7 @@ def route_business_glossary():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME" , UPLOAD_FOLDER + filename);
+            print("FILENAME" , UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
             # print("excelData",excelData.to_dict())
             excelDataAsList = excelData.values.tolist()
@@ -336,7 +336,17 @@ def route_data_catalogue():
     # Detect the current page
     segment = get_segment(request)
     upload_data_catalogue_excel_form = UploadDataCataloguesExcelForm(request.form)
-    data_catalogue = eSquareDataCatalogue.query.all()
+    
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        data_catalogue = eSquareDataCatalogue.query.filter(or_(eSquareDataCatalogue.attributeName.contains(search_query),eSquareDataCatalogue.attributeDescription.contains(search_query)))
+    else:
+        data_catalogue = eSquareDataCatalogue.query.all()
+
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
         if 'excelFilePath' not in request.files:
@@ -352,7 +362,7 @@ def route_data_catalogue():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME" , UPLOAD_FOLDER + filename);
+            print("FILENAME" , UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',dtype=object)
             # print("excelData",excelData.to_dict())
             excelDataAsList = excelData.values.tolist()
@@ -398,7 +408,7 @@ def route_data_catalogue():
         return redirect("data_catalogue")
         # return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form)
     else:
-        return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form)
+        return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form, search_form=search_query_form,search_query=search_query)
 
 
 @blueprint.route('/data_sets', methods=['GET', 'POST'])
@@ -412,7 +422,7 @@ def route_data_sets():
 
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
-        print("Args : " , search_query);
+        print("Args : " , search_query)
         data_sets = eSquareDataSets.query.filter(or_(eSquareDataSets.dataSetName.contains(search_query),eSquareDataSets.dataSetDescription.contains(search_query)))
     else:
         data_sets = eSquareDataSets.query.all()
@@ -450,7 +460,7 @@ def route_data_sets():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            # print("FILENAME" , UPLOAD_FOLDER + filename);
+            # print("FILENAME" , UPLOAD_FOLDER + filename)
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',header=0,dtype=object)
             # print("excelDataHead",excelData.head().to_dict())
             
