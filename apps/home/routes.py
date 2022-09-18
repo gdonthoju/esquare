@@ -9,12 +9,13 @@ from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
 from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue, eSquareDataSetFields
-from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm, EditDataSetForm
+from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm, EditDataSetForm, SearchQueryForm
 import pandas
 import numpy
 from werkzeug.utils import secure_filename
 import os
 import datetime
+from sqlalchemy import or_
 from apps import db
 from flask_login import (
     current_user
@@ -405,15 +406,24 @@ def route_data_catalogue():
 def route_data_sets():
     # Detect the current page
     segment = get_segment(request)
-    upload_data_set_form = CreateDataSetForm(request.form)
-    data_sets = eSquareDataSets.query.all()
-    print("data_sets : ", data_sets)
+    upload_data_set_form = CreateDataSetForm(request.form)  
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query);
+        data_sets = eSquareDataSets.query.filter(or_(eSquareDataSets.dataSetName.contains(search_query),eSquareDataSets.dataSetDescription.contains(search_query)))
+    else:
+        data_sets = eSquareDataSets.query.all()
+    
+    # print("data_sets : ", data_sets)  
 
     if request.method == 'POST' and 'upload_dataset_button' in request.form.keys():
         dataSetName = request.form['dataSetName']
         dataSetDescription = request.form['dataSetDescription']
-        print("dataSetName : " , dataSetName)
-        print("dataSetDescription : " , dataSetDescription)
+        # print("dataSetName : " , dataSetName)
+        # print("dataSetDescription : " , dataSetDescription)
         dataSetValues = {}
         dataSetValues['dataSetName'] = dataSetName
         dataSetValues['dataSetDescription'] = dataSetDescription
@@ -425,22 +435,22 @@ def route_data_sets():
         db.session.add(dataSetAdd)
         db.session.commit()
         dataSetID = dataSetAdd.id
-        print("dataSetID : " , dataSetID)
+        # print("dataSetID : " , dataSetID)
 
         if 'excelFilePath' not in request.files:
             flash('No file part')
             print('No file part')
         file = request.files['excelFilePath']
-        print('file data' , file)
+        # print('file data' , file)
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
-            print('No selected file')
+            # print('No selected file')
             flash('No selected file')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            print("FILENAME" , UPLOAD_FOLDER + filename);
+            # print("FILENAME" , UPLOAD_FOLDER + filename);
             excelData = pandas.read_excel(UPLOAD_FOLDER + filename,engine='openpyxl',header=0,dtype=object)
             # print("excelDataHead",excelData.head().to_dict())
             
@@ -456,7 +466,7 @@ def route_data_sets():
                     dataSetExcelRowAdd = {}
                     dataSetExcelRowAdd['dataSetId'] = dataSetID
                     dataSetExcelRowAdd['dataSetFieldName'] = excelDataHead[iter]
-                    dataSetExcelRowAdd['dataSetFieldValue'] = dataItem[iter]
+                    dataSetExcelRowAdd['dataSetFieldValue'] = str(dataItem[iter])
                     dataSetExcelRowAdd['dataSetCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
                     dataSetExcelRowAdd['dataSetCreatedBy'] = current_user.get_id()
                     dataSetExcelRowAdd['dataSetUpdatedBy'] = current_user.get_id()
@@ -465,12 +475,8 @@ def route_data_sets():
                     db.session.add(dataSetFieldsAdd)
                     db.session.commit()
         return redirect("data_sets")
-        # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
-    elif request.method == 'GET' and 'q' in request.form.keys():
-        print("search_param" , request.args.get['q'])
-        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form)
     else:
-        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form)
+        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form, search_form=search_query_form,search_query=search_query)
 
 
 @blueprint.route('/data_set/<data_set_id>', methods=['GET', 'POST'])

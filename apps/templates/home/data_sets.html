@@ -13,8 +13,18 @@
           <div class="card mt-4">
             <div class="card-header p-3">
               <span><h5 class="mb-0" style="display: inline-block;">Data Sets</h5></span>
+              <span><button type="button" style="margin-left: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#uploadDataSetModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
               <!-- <span><a href="business-glossary-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add<i class="material-icons text-sm my-auto me-1">upload</i></a></span> -->
-              <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#uploadDataSetModal">Add<i class="material-icons text-sm my-auto me-1">upload</i></button></span>
+              <div style="float: right;margin-right: 1em;" class="col-auto ms-md-auto pe-md-3 d-flex align-items-center">
+                <form method="get" action="" enctype=multipart/form-data>
+                  <span class="" style="float: right;">
+                    <button type="submit" class="btn btn-info mb-3"><i class="material-icons text-sm my-auto me-1">search</i></button>
+                  </span>
+                  <span style="float: right;">
+                    <div class="input-group input-group-outline"><label class="form-label">Search </label>{{ search_form.search_query(class="form-control",value=search_query) }}</div>
+                  </span>
+                </form>
+              </div>
 
               <!-- Modal -->
               <div class="modal fade" id="uploadDataSetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

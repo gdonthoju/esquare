@@ -5,9 +5,11 @@ Copyright (c) 2019 - present eSquare
 
 from email.policy import default
 from importlib.resources import contents
+from unicodedata import name
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField, FileField, BooleanField
+from wtforms import TextField, PasswordField, TextAreaField, SelectField, HiddenField, FileField, BooleanField, SubmitField
+from wtforms.fields.html5 import SearchField
 from wtforms.validators import Email, DataRequired
 
 # login and registration
@@ -492,3 +494,9 @@ class EditDataDomainForm(FlaskForm):
                          id='dataDomainDescription',
                          render_kw={'class': 'form-control', 'rows': 5},
                          validators=[DataRequired()])
+
+class SearchQueryForm(FlaskForm):
+    search_query = SearchField('Search',
+                         id='searchQuery',
+                         render_kw={'class': 'form-control', 'placeholder':'String'},
+                         validators=[])
