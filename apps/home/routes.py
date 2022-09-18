@@ -234,7 +234,17 @@ def route_data_consumers():
     # Detect the current page
     segment = get_segment(request)
     upload_data_consumers_excel_form = UploadDataConsumersExcelForm(request.form)
-    data_consumers = eSquareDataConsumers.query.all()
+    
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        data_consumers = eSquareDataConsumers.query.filter(or_(eSquareDataConsumers.consumerApplicationName.contains(search_query),eSquareDataConsumers.description.contains(search_query)))
+    else:
+        data_consumers = eSquareDataConsumers.query.all()
+
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
 
         if 'excelFilePath' not in request.files:
@@ -278,8 +288,7 @@ def route_data_consumers():
         return redirect("data_consumers")
         # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
     else:
-        return render_template("home/data_consumers.html", data_consumers=data_consumers, segment=segment,
-                               form=upload_data_consumers_excel_form)
+        return render_template("home/data_consumers.html", data_consumers=data_consumers, segment=segment, form=upload_data_consumers_excel_form ,search_form=search_query_form, search_query=search_query)
 
 @blueprint.route('/business_glossary', methods=['GET', 'POST'])
 @login_required
