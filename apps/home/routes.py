@@ -55,8 +55,16 @@ def route_template(template):
         segment = get_segment(request)
 
         if template.startswith('notifications'):
-            observations = eSquareObservations.query.all()
-            return render_template("home/" + template, observations=observations, segment=segment)
+            search_query_form = SearchQueryForm(request.form)
+            search_query = ''
+
+            if request.method == 'GET' and 'search_query' in request.args.keys():
+                search_query = request.args.get('search_query')
+                print("Args : " , search_query)
+                observations = eSquareObservations.query.filter(or_(eSquareObservations.observation.contains(search_query)))
+            else:
+                observations = eSquareObservations.query.all()
+            return render_template("home/" + template, observations=observations, segment=segment, search_form=search_query_form, search_query=search_query)
 
         # Serve the file (if exists) from app/templates/home/FILE.html
         return render_template("home/" + template, segment=segment)
@@ -183,7 +191,7 @@ def route_data_sources():
         return redirect("data_sources")
         # return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
     else:
-        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form ,search_form=search_query_form, search_query=search_query)
+        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form, search_form=search_query_form, search_query=search_query)
 
 @blueprint.route('/data_producers', methods=['GET', 'POST'])
 @login_required
