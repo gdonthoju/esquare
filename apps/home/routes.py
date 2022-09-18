@@ -128,7 +128,17 @@ def route_data_sources():
     # Detect the current page
     segment = get_segment(request)
     upload_data_sources_excel_form = UploadDataSourcesExcelForm(request.form)
-    data_sources = eSquareDataSources.query.all()
+    
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        data_sources = eSquareDataSources.query.filter(or_(eSquareDataSources.applicationName.contains(search_query),eSquareDataSources.description.contains(search_query)))
+    else:
+        data_sources = eSquareDataSources.query.all()
+
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
         if 'excelFilePath' not in request.files:
@@ -173,7 +183,7 @@ def route_data_sources():
         return redirect("data_sources")
         # return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
     else:
-        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form)
+        return render_template("home/data_sources.html", data_sources=data_sources, segment=segment, form=upload_data_sources_excel_form ,search_form=search_query_form, search_query=search_query)
 
 @blueprint.route('/data_producers', methods=['GET', 'POST'])
 @login_required
@@ -181,7 +191,17 @@ def route_data_producers():
     # Detect the current page
     segment = get_segment(request)
     upload_data_producers_excel_form = UploadDataProducersExcelForm(request.form)
-    data_producers = eSquareDataProducers.query.all()
+    
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        data_producers = eSquareDataProducers.query.filter(or_(eSquareDataProducers.producerApplicationName.contains(search_query),eSquareDataProducers.description.contains(search_query)))
+    else:
+        data_producers = eSquareDataProducers.query.all()
+
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
         if 'excelFilePath' not in request.files:
@@ -226,7 +246,7 @@ def route_data_producers():
         return redirect("data_producers")
         # return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
     else:
-        return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form)
+        return render_template("home/data_producers.html", data_producers=data_producers, segment=segment, form=upload_data_producers_excel_form ,search_form=search_query_form, search_query=search_query)
 
 @blueprint.route('/data_consumers', methods=['GET', 'POST'])
 @login_required
@@ -347,7 +367,7 @@ def route_business_glossary():
         return redirect("business_glossary")
         # return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
     else:
-        return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form, search_form=search_query_form,search_query=search_query)
+        return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form, search_form=search_query_form, search_query=search_query)
 
 @blueprint.route('/data_catalogue', methods=['GET', 'POST'])
 @login_required
@@ -427,7 +447,7 @@ def route_data_catalogue():
         return redirect("data_catalogue")
         # return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form)
     else:
-        return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form, search_form=search_query_form,search_query=search_query)
+        return render_template("home/data_catalogue.html", data_catalogue=data_catalogue, segment=segment, form=upload_data_catalogue_excel_form, search_form=search_query_form, search_query=search_query)
 
 
 @blueprint.route('/data_sets', methods=['GET', 'POST'])
@@ -505,7 +525,7 @@ def route_data_sets():
                     db.session.commit()
         return redirect("data_sets")
     else:
-        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form, search_form=search_query_form,search_query=search_query)
+        return render_template("home/data_sets.html", data_sets=data_sets, segment=segment, form=upload_data_set_form, search_form=search_query_form, search_query=search_query)
 
 
 @blueprint.route('/data_set/<data_set_id>', methods=['GET', 'POST'])

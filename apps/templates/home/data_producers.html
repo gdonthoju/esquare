@@ -13,7 +13,17 @@
           <div class="card mt-4">
             <div class="card-header p-3">
               <span><h5 class="mb-0" style="display: inline-block;">Data Producers</h5></span>
-              <span><a href="data-producer-add" type="button" style="float: right;" class="btn-add btn bg-gradient-info w-20 my-0 mb-0">Add</a></span>
+              <div style="float: right;" class="col-auto ms-md-auto pe-md-3 d-flex align-items-center">
+                <form method="get" action="" enctype=multipart/form-data>
+                  <span class="" style="float: right;">
+                    <button type="submit" class="btn btn-info mb-3"><i class="material-icons text-sm my-auto me-1">search</i></button>
+                  </span>
+                  <span style="float: right;">
+                    <div class="input-group input-group-outline"><label class="form-label"></label>{{ search_form.search_query(class="form-control",value=search_query) }}</div>
+                  </span>
+                </form>
+              </div>
+              <span><a href="data-producer-add" type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-info w-10 my-0 mb-0">Add</a></span>
               <span><button type="button" style="float: right;margin-right: 1em;" class="btn-add btn bg-gradient-secondary w-10 my-0 mb-0" data-bs-toggle="modal" data-bs-target="#excelUploadModal"><i class="material-icons text-sm my-auto me-1">upload</i></button></span>
 
               <!-- Modal -->
