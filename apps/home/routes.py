@@ -287,7 +287,17 @@ def route_business_glossary():
     # Detect the current page
     segment = get_segment(request)
     upload_business_glossary_excel_form = UploadBusinessGlossarysExcelForm(request.form)
-    business_glossary = eSquareBusinessGlossary.query.all()
+
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        business_glossary = eSquareBusinessGlossary.query.filter(or_(eSquareBusinessGlossary.businessDefinition.contains(search_query),eSquareBusinessGlossary.businessDomain.contains(search_query)))
+    else:
+        business_glossary = eSquareBusinessGlossary.query.all()
+
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
         if 'excelFilePath' not in request.files:
@@ -328,7 +338,7 @@ def route_business_glossary():
         return redirect("business_glossary")
         # return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
     else:
-        return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form)
+        return render_template("home/business_glossary.html", business_glossary=business_glossary, segment=segment, form=upload_business_glossary_excel_form, search_form=search_query_form,search_query=search_query)
 
 @blueprint.route('/data_catalogue', methods=['GET', 'POST'])
 @login_required
