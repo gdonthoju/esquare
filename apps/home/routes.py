@@ -41,8 +41,15 @@ def index():
     counts_data['data_consumers_count'] = eSquareDataConsumers.query.count()
     counts_data['data_sets_count'] = eSquareDataSets.query.count()
     counts_data['data_observability_count'] = eSquareObservations.query.count()
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        render_redirect = ''
+        return redirect("search?search_query="+search_query)
+    else:
+        render_redirect = render_template('home/index.html', segment='index', counts_data = counts_data, form = universal_search_form, search_form=search_query_form, search_query=search_query)
 
-    return render_template('home/index.html', segment='index', counts_data = counts_data, form = universal_search_form, search_form=search_query_form, search_query=search_query)
+    return render_redirect
 
 
 @blueprint.route('/<template>')
@@ -176,7 +183,7 @@ def route_data_producers():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_producers = eSquareDataProducers.query.filter(or_(eSquareDataProducers.producerApplicationName.contains(search_query),eSquareDataProducers.description.contains(search_query)))
+        data_producers = data_producers_search_method(search_query)
     else:
         data_producers = eSquareDataProducers.query.all()
 
@@ -239,7 +246,7 @@ def route_data_consumers():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_consumers = eSquareDataConsumers.query.filter(or_(eSquareDataConsumers.consumerApplicationName.contains(search_query),eSquareDataConsumers.description.contains(search_query)))
+        data_consumers = data_consumers_search_method(search_query)
     else:
         data_consumers = eSquareDataConsumers.query.all()
 
@@ -301,7 +308,7 @@ def route_business_glossary():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        business_glossary = eSquareBusinessGlossary.query.filter(or_(eSquareBusinessGlossary.businessDefinition.contains(search_query),eSquareBusinessGlossary.businessDomain.contains(search_query)))
+        business_glossary = business_glossary_search_method(search_query)
     else:
         business_glossary = eSquareBusinessGlossary.query.all()
 
@@ -360,7 +367,7 @@ def route_data_catalogue():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_catalogue = eSquareDataCatalogue.query.filter(or_(eSquareDataCatalogue.attributeName.contains(search_query),eSquareDataCatalogue.attributeDescription.contains(search_query)))
+        data_catalogue = data_catalogue_search_method(search_query)
     else:
         data_catalogue = eSquareDataCatalogue.query.all()
 
@@ -440,7 +447,7 @@ def route_data_sets():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_sets = eSquareDataSets.query.filter(or_(eSquareDataSets.dataSetName.contains(search_query),eSquareDataSets.dataSetDescription.contains(search_query)))
+        data_sets = data_sets_search_method(search_query)
     else:
         data_sets = eSquareDataSets.query.all()
     
@@ -550,3 +557,48 @@ def route_data_set(data_set_id):
         # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
     else:
         return render_template("home/data_set.html", data_set_details=data_set_details, data_set_field_names=data_set_field_names, data_set_display_field_details=data_set_display_field_details , segment=segment, form=edit_data_set_form)
+
+@blueprint.route('/search', methods=['GET', 'POST'])
+@login_required
+def route_search():
+    # Detect the current page
+    segment = get_segment(request)
+    search_query_form = SearchQueryForm(request.form)
+    search_query = ''
+
+    if request.method == 'GET' and 'search_query' in request.args.keys():
+        search_query = request.args.get('search_query')
+        print("Args : " , search_query)
+        data_producers_search = data_producers_search_method(search_query)
+        data_consumers_search = data_consumers_search_method(search_query)
+        business_glossary_search = business_glossary_search_method(search_query)
+        data_catalogue_search = data_catalogue_search_method(search_query)
+        data_sets_search = data_sets_search_method(search_query)
+
+        print("data_producers_search", data_producers_search)
+        print("data_consumers_search", data_consumers_search)
+        print("business_glossary_search", business_glossary_search)
+        print("data_catalogue_search", data_catalogue_search)
+        print("data_consumers_search", data_sets_search)
+    
+    # print("search : ", search)  
+
+    return render_template("home/search.html", data_producers_search=data_producers_search, data_consumers_search=data_consumers_search, business_glossary_search=business_glossary_search, data_catalogue_search=data_catalogue_search, data_sets_search=data_sets_search, segment=segment, search_form=search_query_form, search_query=search_query)
+
+def data_producers_search_method(search_query):
+    return eSquareDataProducers.query.filter(or_(eSquareDataProducers.producerApplicationName.contains(search_query),eSquareDataProducers.description.contains(search_query)))
+
+def data_consumers_search_method(search_query):
+    return eSquareDataConsumers.query.filter(or_(eSquareDataConsumers.consumerApplicationName.contains(search_query),eSquareDataConsumers.description.contains(search_query)))
+
+def business_glossary_search_method(search_query):
+    return eSquareBusinessGlossary.query.filter(or_(eSquareBusinessGlossary.businessDefinition.contains(search_query),eSquareBusinessGlossary.businessDomain.contains(search_query)))
+
+def data_catalogue_search_method(search_query):
+    return eSquareDataCatalogue.query.filter(or_(eSquareDataCatalogue.attributeName.contains(search_query),eSquareDataCatalogue.attributeDescription.contains(search_query)))
+
+def data_sets_search_method(search_query):
+    return eSquareDataSets.query.filter(or_(eSquareDataSets.dataSetName.contains(search_query),eSquareDataSets.dataSetDescription.contains(search_query)))
+
+
+

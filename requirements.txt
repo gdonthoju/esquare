@@ -13,3 +13,4 @@ flask-restx==0.5.1
 babel
 pandas
 openpyxl
+Werkzeug==2.0.0
