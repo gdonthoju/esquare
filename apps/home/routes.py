@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present eSquare
+Copyright (c) 2019 - present kloudbee
 """
 
 from typing import ItemsView
@@ -8,7 +8,7 @@ from apps.home import blueprint
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-from apps.authentication.models import eSquareDataSets, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue, eSquareDataSetFields
+from apps.authentication.models import kloudbeeDataSets, kloudbeeObservations, kloudbeeDataProducers, kloudbeeDataConsumers, kloudbeeDataSources, kloudbeeBusinessGlossary, kloudbeeDataCatalogue, kloudbeeDataSetFields
 from apps.authentication.forms import UniversalSearchForm, UploadDataProducersExcelForm, UploadDataSourcesExcelForm, UploadDataConsumersExcelForm, UploadBusinessGlossarysExcelForm, UploadDataCataloguesExcelForm, CreateDataSetForm, EditDataSetForm, SearchQueryForm
 import pandas
 import numpy
@@ -21,7 +21,7 @@ from flask_login import (
     current_user
 )
 
-UPLOAD_FOLDER = '/Users/girishdonthoju/Documents/development/esquare/apps/home/temp_uploads/'
+UPLOAD_FOLDER = '/Users/girishdonthoju/Documents/development/kloudbee/apps/home/temp_uploads/'
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 @blueprint.route('/index')
@@ -33,14 +33,14 @@ def index():
     search_query = ''
     
     counts_data = {}
-    counts_data['data_sources_count'] = eSquareDataSources.query.count()
-    counts_data['business_glossary_count'] = eSquareBusinessGlossary.query.count()
-    counts_data['data_catalogue_count'] = eSquareDataCatalogue.query.count()
+    counts_data['data_sources_count'] = kloudbeeDataSources.query.count()
+    counts_data['business_glossary_count'] = kloudbeeBusinessGlossary.query.count()
+    counts_data['data_catalogue_count'] = kloudbeeDataCatalogue.query.count()
     counts_data['hits_count'] = '#'
-    counts_data['data_producers_count'] = eSquareDataProducers.query.count()
-    counts_data['data_consumers_count'] = eSquareDataConsumers.query.count()
-    counts_data['data_sets_count'] = eSquareDataSets.query.count()
-    counts_data['data_observability_count'] = eSquareObservations.query.count()
+    counts_data['data_producers_count'] = kloudbeeDataProducers.query.count()
+    counts_data['data_consumers_count'] = kloudbeeDataConsumers.query.count()
+    counts_data['data_sets_count'] = kloudbeeDataSets.query.count()
+    counts_data['data_observability_count'] = kloudbeeObservations.query.count()
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
@@ -71,9 +71,9 @@ def route_template(template):
             if request.method == 'GET' and 'search_query' in request.args.keys():
                 search_query = request.args.get('search_query')
                 print("Args : " , search_query)
-                observations = eSquareObservations.query.filter(or_(eSquareObservations.observation.contains(search_query)))
+                observations = kloudbeeObservations.query.filter(or_(kloudbeeObservations.observation.contains(search_query)))
             else:
-                observations = eSquareObservations.query.all()
+                observations = kloudbeeObservations.query.all()
             return render_template("home/" + template, observations=observations, segment=segment, search_form=search_query_form, search_query=search_query)
 
         # Serve the file (if exists) from app/templates/home/FILE.html
@@ -120,9 +120,9 @@ def route_data_sources():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_sources = eSquareDataSources.query.filter(or_(eSquareDataSources.applicationName.contains(search_query),eSquareDataSources.description.contains(search_query)))
+        data_sources = kloudbeeDataSources.query.filter(or_(kloudbeeDataSources.applicationName.contains(search_query),kloudbeeDataSources.description.contains(search_query)))
     else:
-        data_sources = eSquareDataSources.query.all()
+        data_sources = kloudbeeDataSources.query.all()
 
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
@@ -159,7 +159,7 @@ def route_data_sources():
                 dataSourceExcelRowAdd['additionalInformation'] = dataItem[9]
                 dataSourceExcelRowAdd['dataSourceOn'] = int(datetime.datetime.now().timestamp() * 1000)
                 dataSourceExcelRowAdd['dataSourceBy'] = current_user.get_id()
-                dataSourceAdd = eSquareDataSources(**dataSourceExcelRowAdd)
+                dataSourceAdd = kloudbeeDataSources(**dataSourceExcelRowAdd)
                 # print(dataProducerAdd)
                 db.session.add(dataSourceAdd)
                 db.session.commit()
@@ -185,7 +185,7 @@ def route_data_producers():
         print("Args : " , search_query)
         data_producers = data_producers_search_method(search_query)
     else:
-        data_producers = eSquareDataProducers.query.all()
+        data_producers = kloudbeeDataProducers.query.all()
 
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
@@ -222,7 +222,7 @@ def route_data_producers():
                 dataProducerExcelRowAdd['msg_batch_apis_type'] = dataItem[10]
                 dataProducerExcelRowAdd['dataProducerOn'] = int(datetime.datetime.now().timestamp() * 1000)
                 dataProducerExcelRowAdd['dataProducerBy'] = current_user.get_id()
-                dataProducerAdd = eSquareDataProducers(**dataProducerExcelRowAdd)
+                dataProducerAdd = kloudbeeDataProducers(**dataProducerExcelRowAdd)
                 # print(dataProducerAdd)
                 db.session.add(dataProducerAdd)
                 db.session.commit()
@@ -248,7 +248,7 @@ def route_data_consumers():
         print("Args : " , search_query)
         data_consumers = data_consumers_search_method(search_query)
     else:
-        data_consumers = eSquareDataConsumers.query.all()
+        data_consumers = kloudbeeDataConsumers.query.all()
 
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
 
@@ -285,7 +285,7 @@ def route_data_consumers():
                 dataConsumerExcelRowAdd['msg_batch_apis_type'] = dataItem[10]
                 dataConsumerExcelRowAdd['dataConsumerOn'] = int(datetime.datetime.now().timestamp() * 1000)
                 dataConsumerExcelRowAdd['dataConsumerBy'] = current_user.get_id()
-                dataConsumerAdd = eSquareDataConsumers(**dataConsumerExcelRowAdd)
+                dataConsumerAdd = kloudbeeDataConsumers(**dataConsumerExcelRowAdd)
                 print(dataConsumerExcelRowAdd)
                 db.session.add(dataConsumerAdd)
                 db.session.commit()
@@ -310,7 +310,7 @@ def route_business_glossary():
         print("Args : " , search_query)
         business_glossary = business_glossary_search_method(search_query)
     else:
-        business_glossary = eSquareBusinessGlossary.query.all()
+        business_glossary = kloudbeeBusinessGlossary.query.all()
 
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
@@ -343,7 +343,7 @@ def route_business_glossary():
                 businessGlossaryExcelRowAdd['businessSteward'] = dataItem[5]
                 businessGlossaryExcelRowAdd['businessGlossaryOn'] = int(datetime.datetime.now().timestamp() * 1000)
                 businessGlossaryExcelRowAdd['businessGlossaryBy'] = current_user.get_id()
-                businessGlossaryAdd = eSquareBusinessGlossary(**businessGlossaryExcelRowAdd)
+                businessGlossaryAdd = kloudbeeBusinessGlossary(**businessGlossaryExcelRowAdd)
                 # print(dataProducerAdd)
                 db.session.add(businessGlossaryAdd)
                 db.session.commit()
@@ -369,7 +369,7 @@ def route_data_catalogue():
         print("Args : " , search_query)
         data_catalogue = data_catalogue_search_method(search_query)
     else:
-        data_catalogue = eSquareDataCatalogue.query.all()
+        data_catalogue = kloudbeeDataCatalogue.query.all()
 
     if request.method == 'POST' and 'excel_upload_button' in request.form.keys():
         
@@ -423,7 +423,7 @@ def route_data_catalogue():
                 dataCatalogueExcelRowAdd['catalogueAttributeCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
                 dataCatalogueExcelRowAdd['catalogueAttributeCreatedBy'] = current_user.get_id()
                 dataCatalogueExcelRowAdd['catalogueAttributeUpdatedBy'] = current_user.get_id()
-                dataCatalogueAdd = eSquareDataCatalogue(**dataCatalogueExcelRowAdd)
+                dataCatalogueAdd = kloudbeeDataCatalogue(**dataCatalogueExcelRowAdd)
                 # print(dataProducerAdd)
                 db.session.add(dataCatalogueAdd)
                 db.session.commit()
@@ -449,7 +449,7 @@ def route_data_sets():
         print("Args : " , search_query)
         data_sets = data_sets_search_method(search_query)
     else:
-        data_sets = eSquareDataSets.query.all()
+        data_sets = kloudbeeDataSets.query.all()
     
     # print("data_sets : ", data_sets)  
 
@@ -465,7 +465,7 @@ def route_data_sets():
         dataSetValues['dataSetCreatedBy'] = current_user.get_id()
         dataSetValues['dataSetUpdatedBy'] = current_user.get_id()
 
-        dataSetAdd = eSquareDataSets(**dataSetValues)
+        dataSetAdd = kloudbeeDataSets(**dataSetValues)
         db.session.add(dataSetAdd)
         db.session.commit()
         dataSetID = dataSetAdd.id
@@ -505,7 +505,7 @@ def route_data_sets():
                     dataSetExcelRowAdd['dataSetCreatedBy'] = current_user.get_id()
                     dataSetExcelRowAdd['dataSetUpdatedBy'] = current_user.get_id()
 
-                    dataSetFieldsAdd = eSquareDataSetFields(**dataSetExcelRowAdd)
+                    dataSetFieldsAdd = kloudbeeDataSetFields(**dataSetExcelRowAdd)
                     db.session.add(dataSetFieldsAdd)
                     db.session.commit()
         return redirect("data_sets")
@@ -519,10 +519,10 @@ def route_data_set(data_set_id):
     # Detect the current page
     segment = get_segment(request)
     edit_data_set_form = EditDataSetForm(request.form)
-    data_set_field_names = eSquareDataSetFields.query.with_entities(eSquareDataSetFields.dataSetFieldName).filter_by(dataSetId=data_set_id).distinct()
-    data_set_details = eSquareDataSets.query.filter_by(id=data_set_id)
+    data_set_field_names = kloudbeeDataSetFields.query.with_entities(kloudbeeDataSetFields.dataSetFieldName).filter_by(dataSetId=data_set_id).distinct()
+    data_set_details = kloudbeeDataSets.query.filter_by(id=data_set_id)
 
-    data_set_field_details_from_db = eSquareDataSetFields.query.filter_by(dataSetId=data_set_id)
+    data_set_field_details_from_db = kloudbeeDataSetFields.query.filter_by(dataSetId=data_set_id)
     data_set_field_details = {}
     data_set_display_field_details = []
     for item in data_set_field_details_from_db:
@@ -549,9 +549,9 @@ def route_data_set(data_set_id):
     if request.method == 'POST' and 'delete_data_set' in request.form.keys():
         idDataSet = data_set_id
         print("delIdDataSet", idDataSet)
-        eSquareDataSetFields.query.filter_by(dataSetId=idDataSet).delete()
+        kloudbeeDataSetFields.query.filter_by(dataSetId=idDataSet).delete()
         db.session.commit()
-        eSquareDataSets.query.filter_by(id=idDataSet).delete()
+        kloudbeeDataSets.query.filter_by(id=idDataSet).delete()
         db.session.commit()
         return redirect("data_sets")
         # return render_template("home/data_set.html", data_set=data_set, segment=segment, form=upload_data_set_form)
@@ -586,19 +586,19 @@ def route_search():
     return render_template("home/search.html", data_producers_search=data_producers_search, data_consumers_search=data_consumers_search, business_glossary_search=business_glossary_search, data_catalogue_search=data_catalogue_search, data_sets_search=data_sets_search, segment=segment, search_form=search_query_form, search_query=search_query)
 
 def data_producers_search_method(search_query):
-    return eSquareDataProducers.query.filter(or_(eSquareDataProducers.producerApplicationName.contains(search_query),eSquareDataProducers.description.contains(search_query)))
+    return kloudbeeDataProducers.query.filter(or_(kloudbeeDataProducers.producerApplicationName.contains(search_query),kloudbeeDataProducers.description.contains(search_query)))
 
 def data_consumers_search_method(search_query):
-    return eSquareDataConsumers.query.filter(or_(eSquareDataConsumers.consumerApplicationName.contains(search_query),eSquareDataConsumers.description.contains(search_query)))
+    return kloudbeeDataConsumers.query.filter(or_(kloudbeeDataConsumers.consumerApplicationName.contains(search_query),kloudbeeDataConsumers.description.contains(search_query)))
 
 def business_glossary_search_method(search_query):
-    return eSquareBusinessGlossary.query.filter(or_(eSquareBusinessGlossary.businessDefinition.contains(search_query),eSquareBusinessGlossary.businessDomain.contains(search_query)))
+    return kloudbeeBusinessGlossary.query.filter(or_(kloudbeeBusinessGlossary.businessDefinition.contains(search_query),kloudbeeBusinessGlossary.businessDomain.contains(search_query)))
 
 def data_catalogue_search_method(search_query):
-    return eSquareDataCatalogue.query.filter(or_(eSquareDataCatalogue.attributeName.contains(search_query),eSquareDataCatalogue.attributeDescription.contains(search_query)))
+    return kloudbeeDataCatalogue.query.filter(or_(kloudbeeDataCatalogue.attributeName.contains(search_query),kloudbeeDataCatalogue.attributeDescription.contains(search_query)))
 
 def data_sets_search_method(search_query):
-    return eSquareDataSets.query.filter(or_(eSquareDataSets.dataSetName.contains(search_query),eSquareDataSets.dataSetDescription.contains(search_query)))
+    return kloudbeeDataSets.query.filter(or_(kloudbeeDataSets.dataSetName.contains(search_query),kloudbeeDataSets.dataSetDescription.contains(search_query)))
 
 
 

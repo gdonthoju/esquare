@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present eSquare
+Copyright (c) 2019 - present kloudbee
 """
 import datetime
 from flask import render_template, redirect, request, url_for
@@ -13,7 +13,7 @@ from flask_login import (
 from apps import db, login_manager
 from apps.authentication import blueprint
 from apps.authentication.forms import LoginForm, CreateAccountForm, CreateObservationForm, CreateDataProducerForm, CreateDataConsumerForm, EditDataProducerForm, CreateDataSourceForm, EditDataSourceForm, EditDataConsumerForm, CreateBusinessGlossaryForm, EditBusinessGlossaryForm, CreateDataCatalogueForm, EditDataCatalogueForm, CreateDataSetForm
-from apps.authentication.models import Users, eSquareObservations, eSquareDataProducers, eSquareDataConsumers, eSquareDataSources, eSquareBusinessGlossary, eSquareDataCatalogue
+from apps.authentication.models import Users, kloudbeeObservations, kloudbeeDataProducers, kloudbeeDataConsumers, kloudbeeDataSources, kloudbeeBusinessGlossary, kloudbeeDataCatalogue
 
 from apps.authentication.util import verify_pass
 
@@ -149,14 +149,14 @@ def observation_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        observation = eSquareObservations(**request.form)
+        observation = kloudbeeObservations(**request.form)
         observation.observationOn = int(datetime.datetime.now().timestamp() * 1000)
         observation.observationBy = current_user.get_id()
         db.session.add(observation)
         db.session.commit()
 
         return render_template('accounts/observation-add.html',
-                               msg='Observation added to eSquare. please <a href="/notifications">view here</a>',
+                               msg='Observation added to kloudbee. please <a href="/notifications">view here</a>',
                                success=True,
                                form=observation_add_form)
 
@@ -198,7 +198,7 @@ def data_source_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataSourceAdd = eSquareDataSources(**request.form)
+        dataSourceAdd = kloudbeeDataSources(**request.form)
         # print(dataSourceAdd)
         dataSourceAdd.dataSourceOn = int(datetime.datetime.now().timestamp() * 1000)
         dataSourceAdd.dataSourceBy = current_user.get_id()
@@ -206,7 +206,7 @@ def data_source_add():
         db.session.commit()
 
         return render_template('accounts/data-source-add.html',
-                               msg='Data Source added to eSquare. please <a href="/data_sources">view here</a>',
+                               msg='Data Source added to kloudbee. please <a href="/data_sources">view here</a>',
                                success=True,
                                form=data_source_add_form)
 
@@ -250,7 +250,7 @@ def data_producer_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataProducerAdd = eSquareDataProducers(**request.form)
+        dataProducerAdd = kloudbeeDataProducers(**request.form)
         # print(dataProducerAdd)
         dataProducerAdd.dataProducerOn = int(datetime.datetime.now().timestamp() * 1000)
         dataProducerAdd.dataProducerBy = current_user.get_id()
@@ -258,7 +258,7 @@ def data_producer_add():
         db.session.commit()
 
         return render_template('accounts/data-producer-add.html',
-                               msg='Data Producer added to eSquare. please <a href="/data_producers">view here</a>',
+                               msg='Data Producer added to kloudbee. please <a href="/data_producers">view here</a>',
                                success=True,
                                form=data_producer_add_form)
 
@@ -303,7 +303,7 @@ def data_producer_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataProducerEdit = eSquareDataProducers(**request.form)
+        dataProducerEdit = kloudbeeDataProducers(**request.form)
        
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -313,18 +313,18 @@ def data_producer_edit():
         updateData['dataProducerOn'] = int(datetime.datetime.now().timestamp() * 1000)
         updateData['dataProducerBy'] = current_user.get_id()
         # print(updateData)
-        eSquareDataProducers.query.filter_by(id=idProducerApplication).update(updateData)
+        kloudbeeDataProducers.query.filter_by(id=idProducerApplication).update(updateData)
         db.session.commit()
 
         return render_template('accounts/data-producer-edit.html',
-                               msg='Data Producer edited to eSquare. please <a href="/data_producers">view here</a>',
+                               msg='Data Producer edited to kloudbee. please <a href="/data_producers">view here</a>',
                                success=True,
                                form=data_producer_edit_form)
 
     elif 'delete_data_producer' in request.form.keys():
         idProducerApplication = request.form['id']
         print("delIdProducerApplication", idProducerApplication)
-        eSquareDataProducers.query.filter_by(id=idProducerApplication).delete()
+        kloudbeeDataProducers.query.filter_by(id=idProducerApplication).delete()
         db.session.commit()
         return redirect("data_producers")
     else:
@@ -367,7 +367,7 @@ def data_source_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataSourceEdit = eSquareDataSources(**request.form)
+        dataSourceEdit = kloudbeeDataSources(**request.form)
        
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -377,18 +377,18 @@ def data_source_edit():
         updateData['dataSourceOn'] = int(datetime.datetime.now().timestamp() * 1000)
         updateData['dataSourceBy'] = current_user.get_id()
         # print(updateData)
-        eSquareDataSources.query.filter_by(id=idSourceApplication).update(updateData)
+        kloudbeeDataSources.query.filter_by(id=idSourceApplication).update(updateData)
         db.session.commit()
 
         return render_template('accounts/data-source-edit.html',
-                               msg='Data Source edited to eSquare. please <a href="/data_sources">view here</a>',
+                               msg='Data Source edited to kloudbee. please <a href="/data_sources">view here</a>',
                                success=True,
                                form=data_source_edit_form)
 
     elif 'delete_data_source' in request.form.keys():
         idSourceApplication = request.form['id']
         print("delIdSourceApplication", idSourceApplication)
-        eSquareDataSources.query.filter_by(id=idSourceApplication).delete()
+        kloudbeeDataSources.query.filter_by(id=idSourceApplication).delete()
         db.session.commit()
         return redirect("data_sources")
     else:
@@ -431,7 +431,7 @@ def data_consumer_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataConsumerAdd = eSquareDataConsumers(**request.form)
+        dataConsumerAdd = kloudbeeDataConsumers(**request.form)
         # print(dataConsumerAdd)
         dataConsumerAdd.dataConsumerOn = int(datetime.datetime.now().timestamp() * 1000)
         dataConsumerAdd.dataConsumerBy = current_user.get_id()
@@ -439,7 +439,7 @@ def data_consumer_add():
         db.session.commit()
 
         return render_template('accounts/data-consumer-add.html',
-                               msg='Data Consumer added to eSquare. please <a href="/data_consumers">view here</a>',
+                               msg='Data Consumer added to kloudbee. please <a href="/data_consumers">view here</a>',
                                success=True,
                                form=data_consumer_add_form)
 
@@ -484,7 +484,7 @@ def data_consumer_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataProducerEdit = eSquareDataProducers(**request.form)
+        dataProducerEdit = kloudbeeDataProducers(**request.form)
 
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -493,18 +493,18 @@ def data_consumer_edit():
         updateData['dataConsumerOn'] = int(datetime.datetime.now().timestamp() * 1000)
         updateData['dataConsumerBy'] = current_user.get_id()
         # print(updateData)
-        eSquareDataConsumers.query.filter_by(id=idConsumerApplication).update(updateData)
+        kloudbeeDataConsumers.query.filter_by(id=idConsumerApplication).update(updateData)
         db.session.commit()
 
         return render_template('accounts/data-consumer-edit.html',
-                               msg='Data Producer edited to eSquare. please <a href="/data_consumers">view here</a>',
+                               msg='Data Producer edited to kloudbee. please <a href="/data_consumers">view here</a>',
                                success=True,
                                form=data_consumer_edit_form)
 
     elif 'delete_data_consumer' in request.form.keys():
         idConsumerApplication = request.form['id']
         print("delIdProducerApplication", idConsumerApplication)
-        eSquareDataConsumers.query.filter_by(id=idConsumerApplication).delete()
+        kloudbeeDataConsumers.query.filter_by(id=idConsumerApplication).delete()
         db.session.commit()
         return redirect("data_consumers")
     else:
@@ -541,7 +541,7 @@ def business_glossary_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        businessGlossaryAdd = eSquareBusinessGlossary(**request.form)
+        businessGlossaryAdd = kloudbeeBusinessGlossary(**request.form)
         # print(businessGlossaryAdd)
         businessGlossaryAdd.businessGlossaryOn = int(datetime.datetime.now().timestamp() * 1000)
         businessGlossaryAdd.businessGlossaryBy = current_user.get_id()
@@ -549,7 +549,7 @@ def business_glossary_add():
         db.session.commit()
 
         return render_template('accounts/business-glossary-add.html',
-                               msg='Business Glossary added to eSquare. please <a href="/business_glossary">view here</a>',
+                               msg='Business Glossary added to kloudbee. please <a href="/business_glossary">view here</a>',
                                success=True,
                                form=business_glossary_add_form)
 
@@ -590,7 +590,7 @@ def business_glossary_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        businessGlossaryEdit = eSquareBusinessGlossary(**request.form)
+        businessGlossaryEdit = kloudbeeBusinessGlossary(**request.form)
        
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -600,18 +600,18 @@ def business_glossary_edit():
         updateData['businessGlossaryOn'] = int(datetime.datetime.now().timestamp() * 1000)
         updateData['businessGlossaryBy'] = current_user.get_id()
         # print(updateData)
-        eSquareBusinessGlossary.query.filter_by(id=idBusinessGlossary).update(updateData)
+        kloudbeeBusinessGlossary.query.filter_by(id=idBusinessGlossary).update(updateData)
         db.session.commit()
 
         return render_template('accounts/business-glossary-edit.html',
-                               msg='Business Glossary edited to eSquare. please <a href="/business_glossary">view here</a>',
+                               msg='Business Glossary edited to kloudbee. please <a href="/business_glossary">view here</a>',
                                success=True,
                                form=business_glossary_edit_form)
 
     elif 'delete_business_glossary' in request.form.keys():
         idBusinessGlossary = request.form['id']
         print("delIdBusinessGlossary", idBusinessGlossary)
-        eSquareBusinessGlossary.query.filter_by(id=idBusinessGlossary).delete()
+        kloudbeeBusinessGlossary.query.filter_by(id=idBusinessGlossary).delete()
         db.session.commit()
         return redirect("business_glossary")
     else:
@@ -656,7 +656,7 @@ def data_catalogue_add():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataCatalogueAdd = eSquareDataCatalogue(**request.form)
+        dataCatalogueAdd = kloudbeeDataCatalogue(**request.form)
         # print(dataCatalogueAdd)
         dataCatalogueAdd.catalogueAttributeCreatedOn = int(datetime.datetime.now().timestamp() * 1000)
         dataCatalogueAdd.catalogueAttributeCreatedBy = current_user.get_id()
@@ -665,7 +665,7 @@ def data_catalogue_add():
         db.session.commit()
 
         return render_template('accounts/data-catalogue-add.html',
-                               msg='Data Catalogue Attribute added to eSquare. please <a href="/data_catalogue">view here</a>',
+                               msg='Data Catalogue Attribute added to kloudbee. please <a href="/data_catalogue">view here</a>',
                                success=True,
                                form=data_catalogue_add_form)
 
@@ -714,7 +714,7 @@ def data_catalogue_edit():
         #                            form=create_account_form)
 
         # else we can create the user
-        dataCatalogueEdit = eSquareDataCatalogue(**request.form)
+        dataCatalogueEdit = kloudbeeDataCatalogue(**request.form)
        
         updateData = dict(request.form)
         del updateData['csrf_token']
@@ -724,18 +724,18 @@ def data_catalogue_edit():
         updateData['catalogueAttributeCreatedOn'] = int(datetime.datetime.now().timestamp() * 1000)
         updateData['catalogueAttributeUpdatedBy'] = current_user.get_id()
         # print(updateData)
-        eSquareDataCatalogue.query.filter_by(id=idDataCatalogue).update(updateData)
+        kloudbeeDataCatalogue.query.filter_by(id=idDataCatalogue).update(updateData)
         db.session.commit()
 
         return render_template('accounts/data-catalogue-edit.html',
-                               msg='Data Catalogue edited to eSquare. please <a href="/data_catalogue">view here</a>',
+                               msg='Data Catalogue edited to kloudbee. please <a href="/data_catalogue">view here</a>',
                                success=True,
                                form=data_catalogue_edit_form)
 
     elif 'delete_data_catalogue' in request.form.keys():
         idDataCatalogue = request.form['id']
         print("delIdDataCatalogue", idDataCatalogue)
-        eSquareDataCatalogue.query.filter_by(id=idDataCatalogue).delete()
+        kloudbeeDataCatalogue.query.filter_by(id=idDataCatalogue).delete()
         db.session.commit()
         return redirect("data_catalogue")
     else:

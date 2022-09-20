@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present eSquare
+Copyright (c) 2019 - present kloudbee
 """
 
 bind = '0.0.0.0:5005'

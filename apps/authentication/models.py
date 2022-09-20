@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Copyright (c) 2019 - present eSquare
+Copyright (c) 2019 - present kloudbee
 """
 
 from flask_login import UserMixin
@@ -48,9 +48,9 @@ def request_loader(request):
     return user if user else None
 
 
-class eSquareObservations(db.Model):
+class kloudbeeObservations(db.Model):
 
-    __tablename__ = 'eSquareObservations'
+    __tablename__ = 'kloudbeeObservations'
 
     id = db.Column(db.Integer, primary_key=True)
     observation = db.Column(db.String(1024))
@@ -72,9 +72,9 @@ class eSquareObservations(db.Model):
     def __repr__(self):
         return str(self.observation)
 
-class eSquareDataSources(db.Model):
+class kloudbeeDataSources(db.Model):
 
-    __tablename__ = 'eSquareDataSources'
+    __tablename__ = 'kloudbeeDataSources'
 
     id = db.Column(db.Integer, primary_key=True)
     applicationName = db.Column(db.String(255))
@@ -104,9 +104,9 @@ class eSquareDataSources(db.Model):
     def __repr__(self):
         return str(self.applicationName)
 
-class eSquareDataConsumers(db.Model):
+class kloudbeeDataConsumers(db.Model):
 
-    __tablename__ = 'eSquareDataConsumers'
+    __tablename__ = 'kloudbeeDataConsumers'
 
     id = db.Column(db.Integer, primary_key=True)
     consumerApplicationName = db.Column(db.String(255))
@@ -137,9 +137,9 @@ class eSquareDataConsumers(db.Model):
     def __repr__(self):
         return str(self.consumerApplicationName)
 
-class eSquareDataProducers(db.Model):
+class kloudbeeDataProducers(db.Model):
 
-    __tablename__ = 'eSquareDataProducers'
+    __tablename__ = 'kloudbeeDataProducers'
 
     id = db.Column(db.Integer, primary_key=True)
     producerApplicationName = db.Column(db.String(255))
@@ -170,9 +170,9 @@ class eSquareDataProducers(db.Model):
     def __repr__(self):
         return str(self.producerApplicationName)
 
-class eSquareBusinessGlossary(db.Model):
+class kloudbeeBusinessGlossary(db.Model):
 
-    __tablename__ = 'eSquareBusinessGlossary'
+    __tablename__ = 'kloudbeeBusinessGlossary'
 
     id = db.Column(db.Integer, primary_key=True)
     businessGlossaryTerm = db.Column(db.String(255))
@@ -198,9 +198,9 @@ class eSquareBusinessGlossary(db.Model):
     def __repr__(self):
         return str(self.businessGlossaryTerm)
 
-class eSquareDataCatalogue(db.Model):
+class kloudbeeDataCatalogue(db.Model):
 
-    __tablename__ = 'eSquareDataCatalogue'
+    __tablename__ = 'kloudbeeDataCatalogue'
 
     id = db.Column(db.Integer, primary_key=True)
     attributeName = db.Column(db.String(255))
@@ -235,9 +235,9 @@ class eSquareDataCatalogue(db.Model):
     def __repr__(self):
         return str(self.attributeName)
 
-class eSquareDataSets(db.Model):
+class kloudbeeDataSets(db.Model):
 
-    __tablename__ = 'eSquareDataSets'
+    __tablename__ = 'kloudbeeDataSets'
 
     id = db.Column(db.Integer, primary_key=True)
     dataSetName = db.Column(db.String(255))
@@ -260,9 +260,9 @@ class eSquareDataSets(db.Model):
     def __repr__(self):
         return str(self.dataSetName)
 
-class eSquareDataSetFields(db.Model):
+class kloudbeeDataSetFields(db.Model):
 
-    __tablename__ = 'eSquareDataSetFields'
+    __tablename__ = 'kloudbeeDataSetFields'
 
     id = db.Column(db.Integer, primary_key=True)
     dataSetId = db.Column(db.Integer)
@@ -286,9 +286,9 @@ class eSquareDataSetFields(db.Model):
     def __repr__(self):
         return str(self.dataSetFieldName)
 
-class eSquareDataDomains(db.Model):
+class kloudbeeDataDomains(db.Model):
 
-    __tablename__ = 'eSquareDataDomains'
+    __tablename__ = 'kloudbeeDataDomains'
 
     id = db.Column(db.Integer, primary_key=True)
     dataDomain = db.Column(db.String(255))
