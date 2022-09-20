@@ -27,8 +27,83 @@
             </div>
             <div class="card-body p-3 pb-0">
               <div class="">
+                <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Sources</h5>
+                {% if data_sources_search %}
+                <div class="table-responsive p-0">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Application Name</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Line Of Business</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Data Domain</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Owner Name</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Technical Owner Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Additional Information</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Created Info</th>
+                        <th class="text-secondary opacity-7"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in data_sources_search %}
+                      <tr>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.applicationName}}</p>
+                          <p class="text-xs text-secondary mb-0">{{item.description}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.lineOfBusiness}}</p>
+                          <p class="text-xs text-secondary mb-0">{{item.businessDomain}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.dataDomain}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.businessOwnerName}}</p>
+                          <p class="text-xs text-secondary mb-0">{{item.businessOwnerEmail}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.technicalOwnerName}}</p>
+                          <p class="text-xs text-secondary mb-0">{{item.technicalOwnerEmail}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.additionalInformation}}</p>
+                        </td>
+                        <td>
+                          <p class="text-xs font-weight-bold mb-0">{{item.dataSourceOn | format_datetime}}</p>
+                          <p class="text-xs text-secondary mb-0">{{item.dataSourceBy}}</p>
+                        </td>
+                        
+                        <td class="align-middle">
+                          <form method="post" action="data-source-edit">
+                            <input type="hidden" name="id" value="{{item.id}}"/>
+                            <input type="hidden" name="applicationName" value="{{item.applicationName}}"/>
+                            <input type="hidden" name="description" value="{{item.description}}"/>
+                            <input type="hidden" name="lineOfBusiness" value="{{item.lineOfBusiness}}"/>
+                            <input type="hidden" name="businessDomain" value="{{item.businessDomain}}"/>
+                            <input type="hidden" name="dataDomain" value="{{item.dataDomain}}"/>
+                            <input type="hidden" name="businessOwnerName" value="{{item.businessOwnerName}}"/>
+                            <input type="hidden" name="businessOwnerEmail" value="{{item.businessOwnerEmail}}"/>
+                            <input type="hidden" name="technicalOwnerName" value="{{item.technicalOwnerName}}"/>
+                            <input type="hidden" name="technicalOwnerEmail" value="{{item.technicalOwnerEmail}}"/>
+                            <input type="hidden" name="additionalInformation" value="{{item.additionalInformation}}"/>
+                            <input type="hidden" name="dataSourceOn" value="{{item.dataSourceOn}}"/>
+                            <input type="hidden" name="dataSourceBy" value="{{item.dataSourceBy}}"/>
+                            <input type="submit" class="text-secondary font-weight-bold text-xs" value="Edit">
+                          </form>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                {% else %}
+                  <h6 class="text-center">No data sources added</h6>
+                {% endif %} 
+              </div>
+              <hr>
+              <div class="">
                 <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Producers</h5>
-                {% if data_producers_search and item in data_producers_search%}
+                {% if data_producers_search %}
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
                     <thead>
@@ -105,7 +180,7 @@
               <hr>
               <div class="">
                 <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Consumers</h5>
-                {% if data_consumers_search and item in data_consumers_search %}
+                {% if data_consumers_search %}
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
                     <thead>
@@ -182,7 +257,7 @@
               <hr>
               <div class="">
                 <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Business Glossary</h5>
-                {% if business_glossary_search and item in business_glossary_search %}
+                {% if business_glossary_search %}
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
                     <thead>
@@ -245,7 +320,7 @@
               <hr>
               <div class="">
                 <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Catalogue</h5>
-                {% if data_catalogue_search and item in data_catalogue_search %}
+                {% if data_catalogue_search %}
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
                     <thead>
@@ -360,7 +435,7 @@
               <hr>
               <div class="">
                 <h5 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Data Sets</h5>
-                {% if data_sets_search and item in data_sets_search%}
+                {% if data_sets_search %}
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
                     <thead>

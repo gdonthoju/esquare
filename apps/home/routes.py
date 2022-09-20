@@ -21,7 +21,7 @@ from flask_login import (
     current_user
 )
 
-UPLOAD_FOLDER = '/Users/girishdonthoju/Documents/development/kloudbee/apps/home/temp_uploads/'
+UPLOAD_FOLDER = '/home/seera/Documents/per/kloudbee/apps/home/temp_uploads/'
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 @blueprint.route('/index')
@@ -183,7 +183,7 @@ def route_data_producers():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_producers = data_producers_search_method(search_query)
+        data_producers = kloudbeeDataProducers.query.filter(or_(kloudbeeDataProducers.producerApplicationName.contains(search_query),kloudbeeDataProducers.description.contains(search_query)))
     else:
         data_producers = kloudbeeDataProducers.query.all()
 
@@ -246,7 +246,7 @@ def route_data_consumers():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_consumers = data_consumers_search_method(search_query)
+        data_consumers = kloudbeeDataConsumers.query.filter(or_(kloudbeeDataConsumers.consumerApplicationName.contains(search_query),kloudbeeDataConsumers.description.contains(search_query)))
     else:
         data_consumers = kloudbeeDataConsumers.query.all()
 
@@ -308,7 +308,7 @@ def route_business_glossary():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        business_glossary = business_glossary_search_method(search_query)
+        business_glossary = kloudbeeBusinessGlossary.query.filter(or_(kloudbeeBusinessGlossary.businessDefinition.contains(search_query),kloudbeeBusinessGlossary.businessDomain.contains(search_query)))
     else:
         business_glossary = kloudbeeBusinessGlossary.query.all()
 
@@ -367,7 +367,7 @@ def route_data_catalogue():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_catalogue = data_catalogue_search_method(search_query)
+        data_catalogue = kloudbeeDataCatalogue.query.filter(or_(kloudbeeDataCatalogue.attributeName.contains(search_query),kloudbeeDataCatalogue.attributeDescription.contains(search_query)))
     else:
         data_catalogue = kloudbeeDataCatalogue.query.all()
 
@@ -447,7 +447,7 @@ def route_data_sets():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_sets = data_sets_search_method(search_query)
+        data_sets = kloudbeeDataSets.query.filter(or_(kloudbeeDataSets.dataSetName.contains(search_query),kloudbeeDataSets.dataSetDescription.contains(search_query)))
     else:
         data_sets = kloudbeeDataSets.query.all()
     
@@ -569,12 +569,14 @@ def route_search():
     if request.method == 'GET' and 'search_query' in request.args.keys():
         search_query = request.args.get('search_query')
         print("Args : " , search_query)
-        data_producers_search = data_producers_search_method(search_query)
-        data_consumers_search = data_consumers_search_method(search_query)
-        business_glossary_search = business_glossary_search_method(search_query)
-        data_catalogue_search = data_catalogue_search_method(search_query)
-        data_sets_search = data_sets_search_method(search_query)
+        data_sources_search = kloudbeeDataSources.query.filter(or_(kloudbeeDataSources.applicationName.contains(search_query),kloudbeeDataSources.description.contains(search_query)))
+        data_producers_search = kloudbeeDataProducers.query.filter(or_(kloudbeeDataProducers.producerApplicationName.contains(search_query),kloudbeeDataProducers.description.contains(search_query)))
+        data_consumers_search = kloudbeeDataConsumers.query.filter(or_(kloudbeeDataConsumers.consumerApplicationName.contains(search_query),kloudbeeDataConsumers.description.contains(search_query)))
+        business_glossary_search = kloudbeeBusinessGlossary.query.filter(or_(kloudbeeBusinessGlossary.businessDefinition.contains(search_query),kloudbeeBusinessGlossary.businessDomain.contains(search_query)))
+        data_catalogue_search = kloudbeeDataCatalogue.query.filter(or_(kloudbeeDataCatalogue.attributeName.contains(search_query),kloudbeeDataCatalogue.attributeDescription.contains(search_query)))
+        data_sets_search = kloudbeeDataSets.query.filter(or_(kloudbeeDataSets.dataSetName.contains(search_query),kloudbeeDataSets.dataSetDescription.contains(search_query)))
 
+        print("data_sources_search", data_sources_search)
         print("data_producers_search", data_producers_search)
         print("data_consumers_search", data_consumers_search)
         print("business_glossary_search", business_glossary_search)
@@ -583,22 +585,5 @@ def route_search():
     
     # print("search : ", search)  
 
-    return render_template("home/search.html", data_producers_search=data_producers_search, data_consumers_search=data_consumers_search, business_glossary_search=business_glossary_search, data_catalogue_search=data_catalogue_search, data_sets_search=data_sets_search, segment=segment, search_form=search_query_form, search_query=search_query)
-
-def data_producers_search_method(search_query):
-    return kloudbeeDataProducers.query.filter(or_(kloudbeeDataProducers.producerApplicationName.contains(search_query),kloudbeeDataProducers.description.contains(search_query)))
-
-def data_consumers_search_method(search_query):
-    return kloudbeeDataConsumers.query.filter(or_(kloudbeeDataConsumers.consumerApplicationName.contains(search_query),kloudbeeDataConsumers.description.contains(search_query)))
-
-def business_glossary_search_method(search_query):
-    return kloudbeeBusinessGlossary.query.filter(or_(kloudbeeBusinessGlossary.businessDefinition.contains(search_query),kloudbeeBusinessGlossary.businessDomain.contains(search_query)))
-
-def data_catalogue_search_method(search_query):
-    return kloudbeeDataCatalogue.query.filter(or_(kloudbeeDataCatalogue.attributeName.contains(search_query),kloudbeeDataCatalogue.attributeDescription.contains(search_query)))
-
-def data_sets_search_method(search_query):
-    return kloudbeeDataSets.query.filter(or_(kloudbeeDataSets.dataSetName.contains(search_query),kloudbeeDataSets.dataSetDescription.contains(search_query)))
-
-
+    return render_template("home/search.html", data_sources_search=data_sources_search, data_producers_search=data_producers_search, data_consumers_search=data_consumers_search, business_glossary_search=business_glossary_search, data_catalogue_search=data_catalogue_search, data_sets_search=data_sets_search, segment=segment, search_form=search_query_form, search_query=search_query)
 
