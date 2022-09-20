@@ -21,7 +21,7 @@ from flask_login import (
     current_user
 )
 
-UPLOAD_FOLDER = '/home/seera/Documents/per/kloudbee/apps/home/temp_uploads/'
+UPLOAD_FOLDER = '/Users/girishdonthoju/Documents/development/esquare/apps/home/temp_uploads/'
 ALLOWED_EXTENSIONS = {'xls', 'xlsx'}
 
 @blueprint.route('/index')
